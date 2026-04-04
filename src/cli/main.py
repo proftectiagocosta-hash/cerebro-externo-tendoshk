@@ -20,12 +20,27 @@ EXAMPLE_TEXT = (
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Executa o piloto do Cerebro Externo Tendoshk.")
     parser.add_argument("--text", help="Texto de entrada para o pipeline do piloto.")
+    parser.add_argument("--file", help="Caminho de um arquivo de texto para servir como entrada.")
     return parser
 
 
+def resolve_input_text(args: argparse.Namespace, parser: argparse.ArgumentParser) -> str:
+    if args.text:
+        return args.text
+
+    if args.file:
+        file_path = Path(args.file)
+        if not file_path.exists():
+            parser.error(f"arquivo nao encontrado: {args.file}")
+        return file_path.read_text(encoding="utf-8")
+
+    return EXAMPLE_TEXT
+
+
 if __name__ == "__main__":
-    args = build_parser().parse_args()
-    input_text = args.text or EXAMPLE_TEXT
+    parser = build_parser()
+    args = parser.parse_args()
+    input_text = resolve_input_text(args, parser)
 
     pipeline = TendoshkPipeline()
     result = pipeline.run(input_text)
