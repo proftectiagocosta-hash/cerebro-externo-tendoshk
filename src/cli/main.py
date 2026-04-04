@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -24,6 +25,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--file", help="Caminho de um arquivo de texto para servir como entrada.")
     parser.add_argument("--output", help="Caminho de um arquivo para salvar a saida textual.")
     parser.add_argument("--format", choices=["text", "json"], default="text")
+    parser.add_argument("--save-run", action="store_true", help="Salva um registro json da execucao em data/runs/.")
     return parser
 
 
@@ -116,6 +118,22 @@ def maybe_write_output(output_text: str, output_path: str | None) -> None:
     path.write_text(output_text, encoding="utf-8")
 
 
+def maybe_save_run(input_text: str, output_format: str, output_text: str, save_run: bool) -> None:
+    if not save_run:
+        return
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_path = PROJECT_ROOT / "data" / "runs" / f"run_{timestamp}.json"
+    run_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "timestamp": timestamp,
+        "input_text": input_text,
+        "output_format": output_format,
+        "output_text": output_text,
+    }
+    run_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 if __name__ == "__main__":
     parser = build_parser()
     args = parser.parse_args()
@@ -127,3 +145,4 @@ if __name__ == "__main__":
 
     print(output_text)
     maybe_write_output(output_text, args.output)
+    maybe_save_run(input_text, args.format, output_text, args.save_run)
