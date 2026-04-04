@@ -1,0 +1,44 @@
+projetos_canonicos:
+  - nome: "NPT_NUCLEO_PERSISTENTE_TENDOSHK"
+    arquivo_drive: "npt_nucleo_persistente_tendoshk.md"
+    descricao: "Memoria persistente, ingestao, arquitetura do nucleo e curadoria."
+
+  - nome: "TENDOSHK_CENTRAL"
+    arquivo_drive: "tendoshk_central.md"
+    descricao: "Estrategia global, branding, visao macro e direcao do ecossistema."
+
+  - nome: "TENDOSHK_LIVRO"
+    arquivo_drive: "tendoshk_livro.md"
+    descricao: "Livro, lore, simbolismo, pistas e codigos."
+
+  - nome: "TENDOSHK_SOLITARIO"
+    arquivo_drive: "tendoshk_solitario.md"
+    descricao: "Jogo de cartas, pygame, layout, regras e dev log."
+
+  - nome: "AMBIENTES_RETOMADA"
+    arquivo_drive: "ambientes_retomada.md"
+    descricao: "Setup de maquinas, retomada, scripts e continuidade entre ambientes."
+
+  - nome: "FACULDADE_ADS"
+    arquivo_drive: "faculdade_ads.md"
+    descricao: "Disciplinas, trabalhos, artigos e materiais academicos."
+
+  - nome: "TENDOSHK_IA"
+    arquivo_drive: "tendoshk_ia.md"
+    descricao: "Ferramenta de geracao de videos com IA e automacao audiovisual."
+
+  - nome: "TENDOSHK_APP"
+    arquivo_drive: "tendoshk_app.md"
+    descricao: "App, front-end, cursos, Quasar, componentes e evolucao do produto."
+
+  - nome: "TENDOSHK_MISTICO"
+    arquivo_drive: "tendoshk_mistico.md"
+    descricao: "Narrativas misticas, estetica cosmica, roteiros e simbolismo."
+
+  - nome: "TENDOSHK_DEVA_PATH"
+    arquivo_drive: "tendoshk_deva_path.md"
+    descricao: "Estrutura institucional da empresa-mae."
+
+  - nome: "SISTEMA_MEMORIA_AUDITORIA"
+    arquivo_drive: "sistema_memoria_auditoria.md"
+    descricao: "Governanca da memoria, auditoria, consistencia e versoes."
