@@ -24,6 +24,8 @@ class PriorityEvaluation:
 @dataclass(frozen=True)
 class PriorityResult:
     score_total: float
+    score_maximo: float
+    percentual: float
     classificacao: str
 
 
@@ -41,10 +43,14 @@ class PriorityEngine:
             + evaluation.urgencia * self.weights.urgencia
             + evaluation.potencial_monetizacao * self.weights.potencial_monetizacao
         )
+        score_maximo = self._max_score()
+        percentual = score_total / score_maximo if score_maximo else 0.0
 
         return PriorityResult(
             score_total=score_total,
-            classificacao=self._classify(score_total),
+            score_maximo=score_maximo,
+            percentual=percentual,
+            classificacao=self._classify(percentual),
         )
 
     @staticmethod
@@ -54,12 +60,14 @@ class PriorityEngine:
             if not 0 <= value <= 5:
                 raise ValueError(f"{field.name} must be between 0 and 5")
 
-    def _classify(self, score_total: float) -> str:
-        max_score = 5 * sum(getattr(self.weights, field.name) for field in fields(self.weights))
+    def _max_score(self) -> float:
+        return 5 * sum(getattr(self.weights, field.name) for field in fields(self.weights))
 
-        if score_total < max_score * 0.4:
+    @staticmethod
+    def _classify(percentual: float) -> str:
+        if percentual < 0.4:
             return "baixa"
-        if score_total < max_score * 0.7:
+        if percentual < 0.7:
             return "media"
         return "alta"
 
@@ -77,4 +85,6 @@ if __name__ == "__main__":
 
     print("Priority engine test")
     print(f"Score total: {result.score_total:.2f}")
+    print(f"Score maximo: {result.score_maximo:.2f}")
+    print(f"Percentual: {result.percentual:.2f}")
     print(f"Classificacao: {result.classificacao}")

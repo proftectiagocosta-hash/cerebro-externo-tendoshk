@@ -69,7 +69,12 @@ if __name__ == "__main__":
         confianca=0.95,
         justificativa="Categoria detectada por palavras-chave de prioridade e roadmap.",
     )
-    priority_result = PriorityResult(score_total=21.0, classificacao="alta")
+    priority_result = PriorityResult(
+        score_total=21.0,
+        score_maximo=25.0,
+        percentual=0.84,
+        classificacao="alta",
+    )
     route = router.route(classifier_result, priority_result)
 
     print("Router test")

@@ -13,7 +13,7 @@ def test_router_suggests_project_and_canonical_index_type() -> None:
             confianca=0.95,
             justificativa="heuristica simples",
         ),
-        PriorityResult(score_total=21.0, classificacao="alta"),
+        PriorityResult(score_total=21.0, score_maximo=25.0, percentual=0.84, classificacao="alta"),
     )
 
     assert result.projeto_sugerido == "TENDOSHK_CENTRAL"
@@ -28,7 +28,7 @@ def test_router_uses_chat_index_only_for_indefinido() -> None:
             confianca=0.2,
             justificativa="sem sinais suficientes",
         ),
-        PriorityResult(score_total=0.0, classificacao="baixa"),
+        PriorityResult(score_total=0.0, score_maximo=25.0, percentual=0.0, classificacao="baixa"),
     )
 
     assert result.destino_sugerido == "CHAT_INDEX_ONLY"
