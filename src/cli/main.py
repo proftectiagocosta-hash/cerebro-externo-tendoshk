@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -10,14 +11,24 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.core.pipeline import TendoshkPipeline
 
 
+EXAMPLE_TEXT = (
+    "Precisamos definir a prioridade e a direcao do roadmap do projeto piloto "
+    "TENDOSHK_CENTRAL para consolidar componentes reutilizaveis."
+)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Executa o piloto do Cerebro Externo Tendoshk.")
+    parser.add_argument("--text", help="Texto de entrada para o pipeline do piloto.")
+    return parser
+
+
 if __name__ == "__main__":
-    example_text = (
-        "Precisamos definir a prioridade e a direcao do roadmap do projeto piloto "
-        "TENDOSHK_CENTRAL para consolidar componentes reutilizaveis."
-    )
+    args = build_parser().parse_args()
+    input_text = args.text or EXAMPLE_TEXT
 
     pipeline = TendoshkPipeline()
-    result = pipeline.run(example_text)
+    result = pipeline.run(input_text)
 
     print("Simulacao integrada do Cerebro Externo Tendoshk")
     print(
