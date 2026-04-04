@@ -53,6 +53,8 @@ def render_text_output(result: PipelineResult) -> str:
         f"justificativa={result.classification.justificativa}",
         "Prioridade",
         f"score_total={result.priority_result.score_total:.2f}",
+        f"score_maximo={result.priority_result.score_maximo:.2f}",
+        f"percentual={result.priority_result.percentual:.2f}",
         f"classificacao={result.priority_result.classificacao}",
         "Roteamento",
         f"projeto_sugerido={result.routing_result.projeto_sugerido}",
@@ -83,6 +85,8 @@ def build_json_output(result: PipelineResult) -> dict[str, object]:
         },
         "prioridade": {
             "score_total": result.priority_result.score_total,
+            "score_maximo": result.priority_result.score_maximo,
+            "percentual": result.priority_result.percentual,
             "classificacao": result.priority_result.classificacao,
         },
         "roteamento": {

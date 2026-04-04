@@ -24,6 +24,8 @@ def test_cli_uses_example_text_without_arguments() -> None:
     assert "Memoria carregada:" in result.stdout
     assert "Classificacao" in result.stdout
     assert "Prioridade" in result.stdout
+    assert "score_maximo=" in result.stdout
+    assert "percentual=" in result.stdout
     assert "Roteamento" in result.stdout
     assert "CHAT_INDEX" in result.stdout
 
@@ -51,7 +53,9 @@ def test_cli_json_output_contains_main_fields() -> None:
     assert result.returncode == 0
     assert payload["memoria_resumo"]["nome"] == "Tendoshk"
     assert "classificacao" in payload
-    assert "prioridade" in payload
+    assert payload["prioridade"]["score_total"] >= 0
+    assert "score_maximo" in payload["prioridade"]
+    assert "percentual" in payload["prioridade"]
     assert "roteamento" in payload
     assert payload["chat_index_block"]
 
