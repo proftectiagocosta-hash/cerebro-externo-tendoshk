@@ -26,6 +26,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", help="Caminho de um arquivo para salvar a saida textual.")
     parser.add_argument("--format", choices=["text", "json"], default="text")
     parser.add_argument("--save-run", action="store_true", help="Salva um registro json da execucao em data/runs/.")
+    parser.add_argument("--export-blocks", action="store_true", help="Exporta os blocos curados para data/exports/.")
     return parser
 
 
@@ -146,6 +147,21 @@ def maybe_save_run(
     run_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def maybe_export_blocks(result: PipelineResult, export_blocks: bool) -> None:
+    if not export_blocks:
+        return
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    chat_index_path = PROJECT_ROOT / "data" / "exports" / "chat_index" / f"chat_index_{timestamp}.txt"
+    chat_index_path.parent.mkdir(parents=True, exist_ok=True)
+    chat_index_path.write_text(result.curated_output.chat_index_block, encoding="utf-8")
+
+    if result.curated_output.npt_entry_block:
+        npt_entry_path = PROJECT_ROOT / "data" / "exports" / "npt_entry" / f"npt_entry_{timestamp}.txt"
+        npt_entry_path.parent.mkdir(parents=True, exist_ok=True)
+        npt_entry_path.write_text(result.curated_output.npt_entry_block, encoding="utf-8")
+
+
 if __name__ == "__main__":
     parser = build_parser()
     args = parser.parse_args()
@@ -158,3 +174,4 @@ if __name__ == "__main__":
     print(output_text)
     maybe_write_output(output_text, args.output)
     maybe_save_run(result, input_text, args.format, output_text, args.save_run)
+    maybe_export_blocks(result, args.export_blocks)

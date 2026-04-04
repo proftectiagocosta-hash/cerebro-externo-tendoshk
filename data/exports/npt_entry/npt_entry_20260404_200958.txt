@@ -1,0 +1,10 @@
+[NPT_ENTRY]
+tipo=memoria_protocolo
+projeto=SISTEMA_MEMORIA_AUDITORIA
+subtipo=simulacao_integrada
+prioridade=media
+destino=NPT_NUCLEO_PERSISTENTE_TENDOSHK
+modo=consolidar
+origem=chatgpt
+conteudo=Documento de protocolo e memoria de procedimento para padronizar o fluxo interno do projeto.
+[/NPT_ENTRY]

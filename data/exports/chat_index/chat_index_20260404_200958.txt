@@ -1,0 +1,8 @@
+[CHAT_INDEX]
+nome_sugerido=Simulacao integrada inicial do piloto
+tipo_indexacao=INDEXAR COMO FONTE
+projeto_principal=SISTEMA_MEMORIA_AUDITORIA
+arquivo_drive=sistema_memoria_auditoria.md
+descricao_curta=Resultado inicial da simulacao integrada do Cerebro Externo Tendoshk.
+potencial_reutilizacao=medio
+[/CHAT_INDEX]
