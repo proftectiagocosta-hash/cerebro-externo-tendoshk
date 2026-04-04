@@ -118,18 +118,30 @@ def maybe_write_output(output_text: str, output_path: str | None) -> None:
     path.write_text(output_text, encoding="utf-8")
 
 
-def maybe_save_run(input_text: str, output_format: str, output_text: str, save_run: bool) -> None:
+def maybe_save_run(
+    result: PipelineResult,
+    input_text: str,
+    output_format: str,
+    output_text: str,
+    save_run: bool,
+) -> None:
     if not save_run:
         return
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_path = PROJECT_ROOT / "data" / "runs" / f"run_{timestamp}.json"
     run_path.parent.mkdir(parents=True, exist_ok=True)
+    structured_output = build_json_output(result)
     payload = {
         "timestamp": timestamp,
         "input_text": input_text,
         "output_format": output_format,
         "output_text": output_text,
+        "classification": structured_output["classificacao"],
+        "priority": structured_output["prioridade"],
+        "routing": structured_output["roteamento"],
+        "chat_index_block": result.curated_output.chat_index_block,
+        "npt_entry_block": result.curated_output.npt_entry_block,
     }
     run_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -145,4 +157,4 @@ if __name__ == "__main__":
 
     print(output_text)
     maybe_write_output(output_text, args.output)
-    maybe_save_run(input_text, args.format, output_text, args.save_run)
+    maybe_save_run(result, input_text, args.format, output_text, args.save_run)
