@@ -96,10 +96,10 @@ cases:
   - id: hibrido_ambiente_estrategia
     title: Caso hibrido entre ambiente e estrategia
     expected_classification: decisao_estrategica
-    expected_npt_prep: npt_entry
-    calibration_status: future_tuning_target
-    rationale: Mistura checkpoint operacional com linguagem de roadmap e prioridade para observar dominancia da heuristica.
-    notes: Caso util para decidir no futuro se sinais operacionais devem reduzir agressividade da classificacao estrategica.
+    expected_npt_prep: review_only
+    calibration_status: suspect
+    rationale: Mistura checkpoint operacional com linguagem de roadmap e prioridade, com baixa canonicidade para um bloco estrategico unico.
+    notes: Expectativa atualizada para review_only porque checkpoint de ambiente e retomada operacional competem demais com a narrativa estrategica.
     input_text: |
       Checkpoint do ambiente WSL: apesar do progresso operacional, precisamos decidir a prioridade,
       a direcao e o roadmap da retomada para nao perder a estrategia do TENDOSHK_CENTRAL.

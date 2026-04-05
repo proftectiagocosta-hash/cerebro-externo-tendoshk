@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from src.agents.curator import ChatIndexArtifact, NPTEntryArtifact
 from src.agents.curator_renderer import render_chat_index_block, render_npt_entry_block
 from src.core.npt_semantic_signals import (
+    has_low_canonicity_hybrid_strategy_signals,
     has_low_canonicity_multi_intent_signals,
     has_low_maturity_protocol_signals,
     has_low_signal_chat_noise,
@@ -47,6 +48,9 @@ class NPTPrep:
             return self._build_review_only_result(pipeline_result)
 
         if pipeline_result.classification == "chat_antigo" and has_low_signal_chat_noise(normalized_content):
+            return self._build_review_only_result(pipeline_result)
+
+        if pipeline_result.classification == "decisao_estrategica" and has_low_canonicity_hybrid_strategy_signals(normalized_content):
             return self._build_review_only_result(pipeline_result)
 
         if pipeline_result.classification == "artefato_tecnico" and has_review_required_technical_signals(normalized_content):

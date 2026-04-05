@@ -120,3 +120,35 @@ def test_npt_prep_returns_review_only_for_low_canonicity_multi_intent_protocol_c
     assert result.eligible is False
     assert result.artifact_type == "review_only"
     assert result.prepared_block == ""
+
+
+def test_npt_prep_returns_review_only_for_hybrid_strategy_operational_content() -> None:
+    result = NPTPrep().prepare(
+        NPTPrepInput(
+            classification="decisao_estrategica",
+            project="TENDOSHK_CENTRAL",
+            destination="NPT_NUCLEO_PERSISTENTE_TENDOSHK",
+            chat_index=ChatIndexArtifact(
+                nome_sugerido="Registro",
+                tipo_indexacao="INDEXAR COMO REFERENCIA FRACA",
+                projeto_principal="TENDOSHK_CENTRAL",
+                arquivo_drive="",
+                descricao_curta="Descricao curta",
+                potencial_reutilizacao="medio",
+            ),
+            npt_entry=NPTEntryArtifact(
+                tipo="decisao_estrategica",
+                projeto="TENDOSHK_CENTRAL",
+                subtipo="simulacao_integrada",
+                prioridade="alta",
+                destino="NPT_NUCLEO_PERSISTENTE_TENDOSHK",
+                modo="consolidar",
+                origem="chatgpt",
+                conteudo="Checkpoint do ambiente WSL: precisamos decidir a prioridade, a direcao e o roadmap da retomada para nao perder a estrategia do TENDOSHK_CENTRAL.",
+            ),
+        )
+    )
+
+    assert result.eligible is False
+    assert result.artifact_type == "review_only"
+    assert result.prepared_block == ""
