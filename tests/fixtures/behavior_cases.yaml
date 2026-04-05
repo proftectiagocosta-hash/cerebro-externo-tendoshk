@@ -74,10 +74,10 @@ cases:
   - id: falso_positivo_npt_entry_governanca_rascunho
     title: Rascunho confuso de governanca com baixa qualidade
     expected_classification: memoria_protocolo
-    expected_npt_prep: npt_entry
+    expected_npt_prep: review_only
     calibration_status: suspect
     rationale: Caso de possivel falso positivo, pois menciona governanca e procedimento sem maturidade real de conteudo.
-    notes: Bate hoje na heuristica, mas parece candidato forte a cair em review_only numa calibracao futura.
+    notes: Expectativa atualizada para review_only porque sinais de rascunho e incompletude devem bloquear pre-ingestao prematura.
     input_text: |
       Rascunho rapido de governanca e procedimento: ainda esta incompleto, sem decisao fechada e sem
       dono claro, mas cita memoria do fluxo e algumas ideias para protocolo futuro do NPT.
@@ -85,10 +85,10 @@ cases:
   - id: falso_positivo_chat_index_conversa_ruido
     title: Conversa ruidosa que ainda tende a chat_index
     expected_classification: chat_antigo
-    expected_npt_prep: chat_index
+    expected_npt_prep: review_only
     calibration_status: suspect
     rationale: Caso de possivel falso positivo, pois o texto tem cara de conversa descartavel, mas aciona a heuristica atual.
-    notes: Bom marcador para revisar se todo chat antigo merece indexacao fraca.
+    notes: Expectativa atualizada para review_only porque sinais de conversa curta e sem profundidade devem barrar indexacao fraca automatica.
     input_text: |
       Conversa curta com pergunta, resposta e mensagem solta sobre um ajuste qualquer do projeto,
       sem profundidade nem consolidacao, mas ainda com cara de chat antigo para referencia fraca.
@@ -130,10 +130,10 @@ cases:
   - id: tecnico_talvez_review_only
     title: Artefato tecnico com chance de falso positivo
     expected_classification: artefato_tecnico
-    expected_npt_prep: npt_entry
+    expected_npt_prep: review_only
     calibration_status: suspect
     rationale: Caso tecnico que talvez devesse cair em review_only no futuro, mas hoje a heuristica tende a npt_entry.
-    notes: Candidato forte para revisitar a regra que promove todo artefato tecnico a pre-ingestao.
+    notes: Expectativa atualizada para review_only porque sinais de instabilidade e revisao pendente reduzem confianca para pre-ingestao.
     input_text: |
       Encontramos um erro na API de exportacao: a funcao que gera yaml e json para o bloco curado
       ainda esta instavel, o codigo precisa de ajuste rapido e a saida tecnica deve ser revisada antes
