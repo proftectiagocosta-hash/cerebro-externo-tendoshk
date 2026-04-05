@@ -37,6 +37,7 @@ def test_cli_uses_example_text_without_arguments() -> None:
     assert "percentual=" in result.stdout
     assert "Roteamento" in result.stdout
     assert "CHAT_INDEX" in result.stdout
+    assert "NPT_PREP" in result.stdout
 
 
 def test_cli_runs_with_text_argument() -> None:
@@ -67,6 +68,7 @@ def test_cli_json_output_contains_main_fields() -> None:
     assert "percentual" in payload["prioridade"]
     assert "roteamento" in payload
     assert payload["chat_index_block"]
+    assert payload["npt_prep"]["artifact_type"] == "npt_entry"
 
 
 def test_cli_creates_output_file(tmp_path: Path) -> None:
@@ -128,9 +130,10 @@ def test_cli_save_run_creates_json_with_expected_fields(tmp_path: Path) -> None:
     assert "classification" in payload
     assert "priority" in payload
     assert "routing" in payload
+    assert "npt_prep" in payload
 
 
-def test_cli_export_blocks_creates_chat_index_and_npt_entry_files(tmp_path: Path) -> None:
+def test_cli_export_blocks_creates_chat_index_npt_entry_and_prepared_block_files(tmp_path: Path) -> None:
     project_root = make_isolated_project(tmp_path)
 
     result = run_cli(
@@ -142,7 +145,9 @@ def test_cli_export_blocks_creates_chat_index_and_npt_entry_files(tmp_path: Path
 
     chat_index_files = list((project_root / "data" / "exports" / "chat_index").glob("chat_index_*.txt"))
     npt_entry_files = list((project_root / "data" / "exports" / "npt_entry").glob("npt_entry_*.txt"))
+    prepared_block_files = list((project_root / "data" / "exports" / "prepared_block").glob("prepared_block_*.txt"))
 
     assert result.returncode == 0
     assert len(chat_index_files) == 1
     assert len(npt_entry_files) == 1
+    assert len(prepared_block_files) == 1

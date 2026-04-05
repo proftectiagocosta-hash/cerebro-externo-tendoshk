@@ -6,6 +6,7 @@ from typing import Any
 from src.agents.classifier import ClassifierResult, TextClassifier
 from src.agents.curator import Curator, CuratorInput, CuratorOutput
 from src.core.memory_loader import MemoryBundle, MemoryLoader
+from src.core.npt_prep import NPTPrep, NPTPrepResult
 from src.core.priority_engine import PriorityEngine, PriorityEvaluation, PriorityResult
 from src.core.router import Router, RouterResult
 
@@ -17,6 +18,7 @@ class PipelineResult:
     priority_result: PriorityResult
     routing_result: RouterResult
     curated_output: CuratorOutput
+    npt_prep: NPTPrepResult
 
 
 class TendoshkPipeline:
@@ -26,6 +28,7 @@ class TendoshkPipeline:
         self.priority_engine = PriorityEngine()
         self.router = Router()
         self.curator = Curator()
+        self.npt_prep = NPTPrep()
 
     def run(self, text: str) -> PipelineResult:
         memory_bundle = self.memory_loader.load()
@@ -51,6 +54,16 @@ class TendoshkPipeline:
             destino=routing_result.destino_sugerido,
         )
         curated_output = self.curator.curate(curator_input)
+        npt_prep = self.npt_prep.prepare(
+            {
+                "classification": classification.tipo_entrada,
+                "priority": priority_result.classificacao,
+                "project": routing_result.projeto_sugerido,
+                "destination": routing_result.destino_sugerido,
+                "chat_index_block": curated_output.chat_index_block,
+                "npt_entry_block": curated_output.npt_entry_block,
+            }
+        )
 
         return PipelineResult(
             memory_bundle=memory_bundle,
@@ -58,6 +71,7 @@ class TendoshkPipeline:
             priority_result=priority_result,
             routing_result=routing_result,
             curated_output=curated_output,
+            npt_prep=npt_prep,
         )
 
     @staticmethod
@@ -116,3 +130,4 @@ if __name__ == "__main__":
     print(result.curated_output.chat_index_block)
     if result.curated_output.npt_entry_block:
         print(result.curated_output.npt_entry_block)
+    print(f"npt_prep={result.npt_prep.artifact_type}")

@@ -14,3 +14,5 @@ def test_pipeline_runs_integrated_flow_for_strategic_text() -> None:
     assert result.routing_result.projeto_sugerido
     assert result.curated_output.chat_index_block
     assert result.curated_output.npt_entry_block
+    assert result.npt_prep.artifact_type == "npt_entry"
+    assert result.npt_prep.prepared_block == result.curated_output.npt_entry_block

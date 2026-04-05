@@ -1,116 +1,59 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Optional
 
 
-@dataclass
+@dataclass(frozen=True)
 class NPTPrepResult:
     eligible: bool
     artifact_type: str
     confidence: str
-    suggested_project: Optional[str]
-    suggested_destination: Optional[str]
+    suggested_project: str | None
+    suggested_destination: str | None
     reasoning_short: str
     prepared_block: str
 
 
 class NPTPrep:
-    def prepare(self, pipeline_result: dict) -> NPTPrepResult:
-        classification = pipeline_result.get("classification", "")
-        priority = pipeline_result.get("priority", "")
-        route = pipeline_result.get("route", "")
-        curated_text = pipeline_result.get("curated_text", "")
+    NPT_ENTRY_TYPES = {"decisao_estrategica", "memoria_protocolo", "artefato_tecnico"}
+    CHAT_INDEX_TYPES = {"chat_antigo"}
 
-        artifact_type = "review_only"
-        confidence = "low"
-        suggested_project = None
-        suggested_destination = None
-        reasoning_short = "Conteúdo ainda não atende critério suficiente para bloco preparatório do NPT."
-        prepared_block = ""
+    def prepare(self, pipeline_result: dict[str, object]) -> NPTPrepResult:
+        classification = str(pipeline_result.get("classification", "") or "")
+        priority = str(pipeline_result.get("priority", "") or "")
+        project = str(pipeline_result.get("project", "") or "")
+        destination = str(pipeline_result.get("destination", "") or "")
+        chat_index_block = str(pipeline_result.get("chat_index_block", "") or "")
+        npt_entry_block = str(pipeline_result.get("npt_entry_block", "") or "")
 
-        if classification in {"strategic", "protocol", "memory", "project"}:
-            artifact_type = "npt_entry"
-            confidence = "medium"
-            suggested_project = self._map_project(route, classification)
-            suggested_destination = self._map_destination(suggested_project)
-            reasoning_short = "Conteúdo com indícios de valor estrutural e possível utilidade persistente."
-            prepared_block = self._build_npt_entry(
-                suggested_project=suggested_project,
-                suggested_destination=suggested_destination,
-                priority=priority,
-                content=curated_text,
+        if classification in self.NPT_ENTRY_TYPES and npt_entry_block:
+            return NPTPrepResult(
+                eligible=True,
+                artifact_type="npt_entry",
+                confidence="medium",
+                suggested_project=project or None,
+                suggested_destination=destination or None,
+                reasoning_short="Conteudo com valor estrutural suficiente para pre-ingestao revisavel no NPT.",
+                prepared_block=npt_entry_block,
             )
 
-        elif classification in {"reference", "archive", "historical"}:
-            artifact_type = "chat_index"
-            confidence = "medium"
-            suggested_project = self._map_project(route, classification)
-            suggested_destination = self._map_destination(suggested_project)
-            reasoning_short = "Conteúdo parece mais adequado para indexação e referência futura."
-            prepared_block = self._build_chat_index(
-                suggested_project=suggested_project,
-                suggested_destination=suggested_destination,
-                content=curated_text,
+        if classification in self.CHAT_INDEX_TYPES and chat_index_block:
+            return NPTPrepResult(
+                eligible=True,
+                artifact_type="chat_index",
+                confidence="medium",
+                suggested_project=project or None,
+                suggested_destination=destination or None,
+                reasoning_short="Conteudo mais adequado para indexacao e recuperacao futura de contexto.",
+                prepared_block=chat_index_block,
             )
-
-        eligible = artifact_type in {"npt_entry", "chat_index"}
 
         return NPTPrepResult(
-            eligible=eligible,
-            artifact_type=artifact_type,
-            confidence=confidence,
-            suggested_project=suggested_project,
-            suggested_destination=suggested_destination,
-            reasoning_short=reasoning_short,
-            prepared_block=prepared_block,
+            eligible=False,
+            artifact_type="review_only",
+            confidence="low",
+            suggested_project=project or None,
+            suggested_destination=destination or None,
+            reasoning_short="Conteudo mantido apenas para revisao humana antes de qualquer pre-ingestao.",
+            prepared_block="",
         )
-
-    def _map_project(self, route: str, classification: str) -> str:
-        if "ambiente" in route.lower():
-            return "AMBIENTES_RETOMADA"
-        if "memoria" in route.lower() or classification in {"memory", "protocol"}:
-            return "NPT_NUCLEO_PERSISTENTE_TENDOSHK"
-        return "TENDOSHK_CENTRAL"
-
-    def _map_destination(self, project: Optional[str]) -> Optional[str]:
-        mapping = {
-            "AMBIENTES_RETOMADA": "ambientes_retomada.md",
-            "NPT_NUCLEO_PERSISTENTE_TENDOSHK": "npt_nucleo_persistente_tendoshk.md",
-            "TENDOSHK_CENTRAL": "tendoshk_central.md",
-        }
-        return mapping.get(project)
-
-    def _build_npt_entry(
-        self,
-        suggested_project: Optional[str],
-        suggested_destination: Optional[str],
-        priority: str,
-        content: str,
-    ) -> str:
-        return f"""[NPT_ENTRY]
-tipo=registro_curado
-projeto={suggested_project or ""}
-subtipo=pre_ingestao_cerebro_externo
-prioridade={priority or "media"}
-destino={suggested_destination or ""}
-modo=consolidar
-origem=cerebro_externo_tendoshk
-conteudo={content.strip()}
-[/NPT_ENTRY]"""
-
-    def _build_chat_index(
-        self,
-        suggested_project: Optional[str],
-        suggested_destination: Optional[str],
-        content: str,
-    ) -> str:
-        resumo = content.strip().replace("\n", " ")
-        resumo = resumo[:220]
-
-        return f"""[CHAT_INDEX]
-nome_sugerido=Registro preparado pelo cerebro externo
-tipo_indexacao=INDEXAR COMO REFERÊNCIA FRACA
-projeto_principal={suggested_project or ""}
-arquivo_drive={suggested_destination or ""}
-descricao_curta={resumo}
-potencial_reutilizacao=Consulta futura e recuperação de contexto relevante
-[/CHAT_INDEX]"""

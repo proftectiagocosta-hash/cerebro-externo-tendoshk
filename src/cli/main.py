@@ -67,10 +67,20 @@ def render_text_output(result: PipelineResult) -> str:
         f"justificativa={result.routing_result.justificativa}",
         "CHAT_INDEX",
         result.curated_output.chat_index_block,
+        "NPT_PREP",
+        f"eligible={result.npt_prep.eligible}",
+        f"artifact_type={result.npt_prep.artifact_type}",
+        f"confidence={result.npt_prep.confidence}",
+        f"suggested_project={result.npt_prep.suggested_project or ''}",
+        f"suggested_destination={result.npt_prep.suggested_destination or ''}",
+        f"reasoning_short={result.npt_prep.reasoning_short}",
     ]
 
     if result.curated_output.npt_entry_block:
         lines.extend(["NPT_ENTRY", result.curated_output.npt_entry_block])
+
+    if result.npt_prep.prepared_block:
+        lines.extend(["PREPARED_BLOCK", result.npt_prep.prepared_block])
 
     return "\n".join(lines)
 
@@ -101,6 +111,15 @@ def build_json_output(result: PipelineResult) -> dict[str, object]:
         },
         "chat_index_block": result.curated_output.chat_index_block,
         "npt_entry_block": result.curated_output.npt_entry_block,
+        "npt_prep": {
+            "eligible": result.npt_prep.eligible,
+            "artifact_type": result.npt_prep.artifact_type,
+            "confidence": result.npt_prep.confidence,
+            "suggested_project": result.npt_prep.suggested_project,
+            "suggested_destination": result.npt_prep.suggested_destination,
+            "reasoning_short": result.npt_prep.reasoning_short,
+            "prepared_block": result.npt_prep.prepared_block,
+        },
     }
 
 
@@ -143,6 +162,7 @@ def maybe_save_run(
         "routing": structured_output["roteamento"],
         "chat_index_block": result.curated_output.chat_index_block,
         "npt_entry_block": result.curated_output.npt_entry_block,
+        "npt_prep": structured_output["npt_prep"],
     }
     run_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -160,6 +180,11 @@ def maybe_export_blocks(result: PipelineResult, export_blocks: bool) -> None:
         npt_entry_path = PROJECT_ROOT / "data" / "exports" / "npt_entry" / f"npt_entry_{timestamp}.txt"
         npt_entry_path.parent.mkdir(parents=True, exist_ok=True)
         npt_entry_path.write_text(result.curated_output.npt_entry_block, encoding="utf-8")
+
+    if result.npt_prep.prepared_block:
+        prepared_block_path = PROJECT_ROOT / "data" / "exports" / "prepared_block" / f"prepared_block_{timestamp}.txt"
+        prepared_block_path.parent.mkdir(parents=True, exist_ok=True)
+        prepared_block_path.write_text(result.npt_prep.prepared_block, encoding="utf-8")
 
 
 if __name__ == "__main__":
