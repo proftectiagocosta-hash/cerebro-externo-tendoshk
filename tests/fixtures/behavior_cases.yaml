@@ -1,0 +1,60 @@
+cases:
+  - id: npt_entry_memoria_protocolo
+    title: Protocolo de governanca para ingestao no NPT
+    expected_classification: memoria_protocolo
+    expected_npt_prep: npt_entry
+    rationale: Documento procedural com alto valor persistente e reaproveitamento.
+    input_text: |
+      Consolidamos um protocolo de governanca para decidir quando um registro deve entrar no
+      NPT_NUCLEO_PERSISTENTE_TENDOSHK, quem revisa o conteudo antes da ingestao oficial e quais
+      campos minimos precisam estar preenchidos para manter rastreabilidade no ecossistema Tendoshk.
+
+  - id: chat_index_contexto_historico
+    title: Contexto de conversa antiga para consulta futura
+    expected_classification: chat_antigo
+    expected_npt_prep: chat_index
+    rationale: Contexto conversacional util para recuperacao futura, mas sem cara de entrada canonica pronta.
+    input_text: |
+      Nesta conversa antiga registramos perguntas, respostas e mensagens sobre como o time vinha
+      descrevendo o fluxo do Cerebro Externo, com observacoes dispersas, historico de decisoes e
+      contexto de interpretacao que pode ser util para referencia futura.
+
+  - id: review_only_devlog_operacional
+    title: Dev log de manutencao de ambiente local
+    expected_classification: dev_log
+    expected_npt_prep: review_only
+    rationale: Registro operacional de ambiente, util para revisao humana, mas nao para pre-ingestao direta.
+    input_text: |
+      Dev log do ambiente WSL: ajustamos permissao de arquivos root-owned, validamos testes locais,
+      corrigimos cache do pytest e registramos checkpoints de execucao para retomar o setup se houver
+      nova falha operacional no workspace Linux.
+
+  - id: ambiguo_entre_memoria_e_estrategia
+    title: Caso ambiguo entre direcao e protocolo
+    expected_classification: memoria_protocolo
+    expected_npt_prep: npt_entry
+    rationale: Mistura elementos de direcao e procedimento; deve ajudar a observar como a heuristica atual decide.
+    input_text: |
+      Precisamos definir a direcao do fluxo oficial de governanca e ao mesmo tempo padronizar o
+      procedimento de triagem para novos registros do projeto piloto, com memoria de etapas e
+      prioridade de consolidacao para reduzir retrabalho no ecossistema Tendoshk.
+
+  - id: operacional_ambiente_retomada
+    title: Retomada de ambiente e checkpoint operacional
+    expected_classification: dev_log
+    expected_npt_prep: review_only
+    rationale: Caso proximo de uso real para incidentes e retomadas no AMBIENTES_RETOMADA.
+    input_text: |
+      Checkpoint operacional do ambiente de retomada: o workspace WSL voltou a responder, o git no
+      Linux recuperou autenticacao HTTPS, os testes locais rodaram e o procedimento de retomada foi
+      documentado para evitar nova perda de contexto na proxima sessao.
+
+  - id: estrategia_roadmap_central
+    title: Decisao estrategica sobre roadmap reutilizavel
+    expected_classification: decisao_estrategica
+    expected_npt_prep: npt_entry
+    rationale: Direcionamento estrategico explicito para o TENDOSHK_CENTRAL.
+    input_text: |
+      Precisamos decidir a prioridade e a direcao do roadmap do TENDOSHK_CENTRAL para consolidar
+      componentes reutilizaveis do Cerebro Externo, reduzir atrito operacional e preparar integracoes
+      futuras com o NPT sem criar uma camada paralela de governanca.
