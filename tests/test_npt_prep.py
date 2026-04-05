@@ -1,14 +1,14 @@
 from src.agents.curator import ChatIndexArtifact, NPTEntryArtifact
-from src.core.npt_prep import NPTPrep
+from src.core.npt_prep import NPTPrep, NPTPrepInput
 
 
 def test_npt_prep_generates_npt_entry_for_structural_content() -> None:
     result = NPTPrep().prepare(
-        {
-            "classification": "memoria_protocolo",
-            "project": "SISTEMA_MEMORIA_AUDITORIA",
-            "destination": "NPT_NUCLEO_PERSISTENTE_TENDOSHK",
-            "chat_index": ChatIndexArtifact(
+        NPTPrepInput(
+            classification="memoria_protocolo",
+            project="SISTEMA_MEMORIA_AUDITORIA",
+            destination="NPT_NUCLEO_PERSISTENTE_TENDOSHK",
+            chat_index=ChatIndexArtifact(
                 nome_sugerido="Registro",
                 tipo_indexacao="INDEXAR COMO FONTE",
                 projeto_principal="SISTEMA_MEMORIA_AUDITORIA",
@@ -16,7 +16,7 @@ def test_npt_prep_generates_npt_entry_for_structural_content() -> None:
                 descricao_curta="Descricao curta",
                 potencial_reutilizacao="alto",
             ),
-            "npt_entry": NPTEntryArtifact(
+            npt_entry=NPTEntryArtifact(
                 tipo="memoria_protocolo",
                 projeto="SISTEMA_MEMORIA_AUDITORIA",
                 subtipo="simulacao_integrada",
@@ -26,7 +26,7 @@ def test_npt_prep_generates_npt_entry_for_structural_content() -> None:
                 origem="chatgpt",
                 conteudo="Conteudo curado",
             ),
-        }
+        )
     )
 
     assert result.eligible is True
@@ -37,11 +37,11 @@ def test_npt_prep_generates_npt_entry_for_structural_content() -> None:
 
 def test_npt_prep_generates_chat_index_for_chat_history() -> None:
     result = NPTPrep().prepare(
-        {
-            "classification": "chat_antigo",
-            "project": "NPT_NUCLEO_PERSISTENTE_TENDOSHK",
-            "destination": "CHAT_INDEX_ONLY",
-            "chat_index": ChatIndexArtifact(
+        NPTPrepInput(
+            classification="chat_antigo",
+            project="NPT_NUCLEO_PERSISTENTE_TENDOSHK",
+            destination="CHAT_INDEX_ONLY",
+            chat_index=ChatIndexArtifact(
                 nome_sugerido="Registro",
                 tipo_indexacao="INDEXAR COMO REFERENCIA FRACA",
                 projeto_principal="NPT_NUCLEO_PERSISTENTE_TENDOSHK",
@@ -49,8 +49,8 @@ def test_npt_prep_generates_chat_index_for_chat_history() -> None:
                 descricao_curta="Descricao curta",
                 potencial_reutilizacao="medio",
             ),
-            "npt_entry": None,
-        }
+            npt_entry=None,
+        )
     )
 
     assert result.eligible is True
@@ -60,11 +60,11 @@ def test_npt_prep_generates_chat_index_for_chat_history() -> None:
 
 def test_npt_prep_returns_review_only_for_non_ingestable_content() -> None:
     result = NPTPrep().prepare(
-        {
-            "classification": "dev_log",
-            "project": "AMBIENTES_RETOMADA",
-            "destination": "NPT_NUCLEO_PERSISTENTE_TENDOSHK",
-            "chat_index": ChatIndexArtifact(
+        NPTPrepInput(
+            classification="dev_log",
+            project="AMBIENTES_RETOMADA",
+            destination="NPT_NUCLEO_PERSISTENTE_TENDOSHK",
+            chat_index=ChatIndexArtifact(
                 nome_sugerido="Registro",
                 tipo_indexacao="INDEXAR COMO REFERENCIA FRACA",
                 projeto_principal="AMBIENTES_RETOMADA",
@@ -72,7 +72,7 @@ def test_npt_prep_returns_review_only_for_non_ingestable_content() -> None:
                 descricao_curta="Descricao curta",
                 potencial_reutilizacao="baixo",
             ),
-            "npt_entry": NPTEntryArtifact(
+            npt_entry=NPTEntryArtifact(
                 tipo="dev_log",
                 projeto="AMBIENTES_RETOMADA",
                 subtipo="simulacao_integrada",
@@ -82,7 +82,7 @@ def test_npt_prep_returns_review_only_for_non_ingestable_content() -> None:
                 origem="chatgpt",
                 conteudo="Conteudo curado",
             ),
-        }
+        )
     )
 
     assert result.eligible is False

@@ -6,7 +6,7 @@ from typing import Any
 from src.agents.classifier import ClassifierResult, TextClassifier
 from src.agents.curator import Curator, CuratorInput, CuratorOutput
 from src.core.memory_loader import MemoryBundle, MemoryLoader
-from src.core.npt_prep import NPTPrep, NPTPrepResult
+from src.core.npt_prep import NPTPrep, NPTPrepInput, NPTPrepResult
 from src.core.priority_engine import PriorityEngine, PriorityEvaluation, PriorityResult
 from src.core.router import Router, RouterResult
 
@@ -55,16 +55,13 @@ class TendoshkPipeline:
         )
         curated_output = self.curator.curate(curator_input)
         npt_prep = self.npt_prep.prepare(
-            {
-                "classification": classification.tipo_entrada,
-                "priority": priority_result.classificacao,
-                "project": routing_result.projeto_sugerido,
-                "destination": routing_result.destino_sugerido,
-                "chat_index": curated_output.chat_index,
-                "npt_entry": curated_output.npt_entry,
-                "chat_index_block": curated_output.chat_index_block,
-                "npt_entry_block": curated_output.npt_entry_block,
-            }
+            NPTPrepInput(
+                classification=classification.tipo_entrada,
+                project=routing_result.projeto_sugerido,
+                destination=routing_result.destino_sugerido,
+                chat_index=curated_output.chat_index,
+                npt_entry=curated_output.npt_entry,
+            )
         )
 
         return PipelineResult(
