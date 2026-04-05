@@ -3,7 +3,9 @@ cases:
     title: Protocolo de governanca para ingestao no NPT
     expected_classification: memoria_protocolo
     expected_npt_prep: npt_entry
+    calibration_status: stable
     rationale: Documento procedural com alto valor persistente e reaproveitamento.
+    notes: Caso-base de memoria_protocolo com sinal forte e expectativa baixa de surpresa.
     input_text: |
       Consolidamos um protocolo de governanca para decidir quando um registro deve entrar no
       NPT_NUCLEO_PERSISTENTE_TENDOSHK, quem revisa o conteudo antes da ingestao oficial e quais
@@ -13,7 +15,9 @@ cases:
     title: Contexto de conversa antiga para consulta futura
     expected_classification: chat_antigo
     expected_npt_prep: chat_index
+    calibration_status: stable
     rationale: Contexto conversacional util para recuperacao futura, mas sem cara de entrada canonica pronta.
+    notes: Caso-base para indexacao fraca a partir de historico conversacional.
     input_text: |
       Nesta conversa antiga registramos perguntas, respostas e mensagens sobre como o time vinha
       descrevendo o fluxo do Cerebro Externo, com observacoes dispersas, historico de decisoes e
@@ -23,7 +27,9 @@ cases:
     title: Dev log de manutencao de ambiente local
     expected_classification: dev_log
     expected_npt_prep: review_only
+    calibration_status: stable
     rationale: Registro operacional de ambiente, util para revisao humana, mas nao para pre-ingestao direta.
+    notes: Caso-base de log operacional que hoje nao deve atravessar para pre-ingestao.
     input_text: |
       Dev log do ambiente WSL: ajustamos permissao de arquivos root-owned, validamos testes locais,
       corrigimos cache do pytest e registramos checkpoints de execucao para retomar o setup se houver
@@ -33,7 +39,9 @@ cases:
     title: Caso ambiguo entre direcao e protocolo
     expected_classification: memoria_protocolo
     expected_npt_prep: npt_entry
+    calibration_status: future_tuning_target
     rationale: Mistura elementos de direcao e procedimento; deve ajudar a observar como a heuristica atual decide.
+    notes: Caso util para revisitar pesos e precedencia entre estrategia e memoria_protocolo no futuro.
     input_text: |
       Precisamos definir a direcao do fluxo oficial de governanca e ao mesmo tempo padronizar o
       procedimento de triagem para novos registros do projeto piloto, com memoria de etapas e
@@ -43,7 +51,9 @@ cases:
     title: Retomada de ambiente e checkpoint operacional
     expected_classification: dev_log
     expected_npt_prep: review_only
+    calibration_status: stable
     rationale: Caso proximo de uso real para incidentes e retomadas no AMBIENTES_RETOMADA.
+    notes: Caso operacional alinhado ao uso real do ambiente de retomada.
     input_text: |
       Checkpoint operacional do ambiente de retomada: o workspace WSL voltou a responder, o git no
       Linux recuperou autenticacao HTTPS, os testes locais rodaram e o procedimento de retomada foi
@@ -53,8 +63,78 @@ cases:
     title: Decisao estrategica sobre roadmap reutilizavel
     expected_classification: decisao_estrategica
     expected_npt_prep: npt_entry
+    calibration_status: stable
     rationale: Direcionamento estrategico explicito para o TENDOSHK_CENTRAL.
+    notes: Caso-base de estrategia explicita e clara para manter estabilidade da heuristica atual.
     input_text: |
       Precisamos decidir a prioridade e a direcao do roadmap do TENDOSHK_CENTRAL para consolidar
       componentes reutilizaveis do Cerebro Externo, reduzir atrito operacional e preparar integracoes
       futuras com o NPT sem criar uma camada paralela de governanca.
+
+  - id: falso_positivo_npt_entry_governanca_rascunho
+    title: Rascunho confuso de governanca com baixa qualidade
+    expected_classification: memoria_protocolo
+    expected_npt_prep: npt_entry
+    calibration_status: suspect
+    rationale: Caso de possivel falso positivo, pois menciona governanca e procedimento sem maturidade real de conteudo.
+    notes: Bate hoje na heuristica, mas parece candidato forte a cair em review_only numa calibracao futura.
+    input_text: |
+      Rascunho rapido de governanca e procedimento: ainda esta incompleto, sem decisao fechada e sem
+      dono claro, mas cita memoria do fluxo e algumas ideias para protocolo futuro do NPT.
+
+  - id: falso_positivo_chat_index_conversa_ruido
+    title: Conversa ruidosa que ainda tende a chat_index
+    expected_classification: chat_antigo
+    expected_npt_prep: chat_index
+    calibration_status: suspect
+    rationale: Caso de possivel falso positivo, pois o texto tem cara de conversa descartavel, mas aciona a heuristica atual.
+    notes: Bom marcador para revisar se todo chat antigo merece indexacao fraca.
+    input_text: |
+      Conversa curta com pergunta, resposta e mensagem solta sobre um ajuste qualquer do projeto,
+      sem profundidade nem consolidacao, mas ainda com cara de chat antigo para referencia fraca.
+
+  - id: hibrido_ambiente_estrategia
+    title: Caso hibrido entre ambiente e estrategia
+    expected_classification: decisao_estrategica
+    expected_npt_prep: npt_entry
+    calibration_status: future_tuning_target
+    rationale: Mistura checkpoint operacional com linguagem de roadmap e prioridade para observar dominancia da heuristica.
+    notes: Caso util para decidir no futuro se sinais operacionais devem reduzir agressividade da classificacao estrategica.
+    input_text: |
+      Checkpoint do ambiente WSL: apesar do progresso operacional, precisamos decidir a prioridade,
+      a direcao e o roadmap da retomada para nao perder a estrategia do TENDOSHK_CENTRAL.
+
+  - id: texto_curto_pobre
+    title: Texto curto e pobre em sinais
+    expected_classification: indefinido
+    expected_npt_prep: review_only
+    calibration_status: stable
+    rationale: Entrada minima para observar o comportamento do classificador quando quase nao ha contexto.
+    notes: Caso de piso para garantir conservadorismo em entradas muito fracas.
+    input_text: |
+      ok
+
+  - id: texto_longo_multiplas_intencoes
+    title: Texto longo com multiplas intencoes concorrentes
+    expected_classification: memoria_protocolo
+    expected_npt_prep: npt_entry
+    calibration_status: future_tuning_target
+    rationale: Caso extenso para observar qual familia de sinais domina quando estrategia, tecnica e governanca aparecem juntas.
+    notes: Bom alvo para futura calibracao de desempate entre intencoes concorrentes.
+    input_text: |
+      Precisamos definir a prioridade e a direcao do roadmap do Cerebro Externo, registrar um
+      protocolo de governanca para triagem e memoria do fluxo oficial, documentar procedimento de
+      revisao, revisar codigo e json de exportacao, tratar erro de ambiente no WSL e consolidar uma
+      funcao operacional para retomar o projeto sem perder contexto do NPT.
+
+  - id: tecnico_talvez_review_only
+    title: Artefato tecnico com chance de falso positivo
+    expected_classification: artefato_tecnico
+    expected_npt_prep: npt_entry
+    calibration_status: suspect
+    rationale: Caso tecnico que talvez devesse cair em review_only no futuro, mas hoje a heuristica tende a npt_entry.
+    notes: Candidato forte para revisitar a regra que promove todo artefato tecnico a pre-ingestao.
+    input_text: |
+      Encontramos um erro na API de exportacao: a funcao que gera yaml e json para o bloco curado
+      ainda esta instavel, o codigo precisa de ajuste rapido e a saida tecnica deve ser revisada antes
+      de qualquer consolidacao mais forte no ecossistema Tendoshk.

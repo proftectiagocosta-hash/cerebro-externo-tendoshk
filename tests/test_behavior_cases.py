@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TypedDict
+from typing import Literal, NotRequired, TypedDict
 
 import pytest
 import yaml
@@ -14,8 +14,10 @@ class BehaviorCase(TypedDict):
     title: str
     expected_classification: str
     expected_npt_prep: str
+    calibration_status: Literal["stable", "suspect", "future_tuning_target"]
     rationale: str
     input_text: str
+    notes: NotRequired[str]
 
 
 FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "behavior_cases.yaml"
@@ -30,5 +32,5 @@ def load_behavior_cases() -> list[BehaviorCase]:
 def test_pipeline_matches_expected_behavior_cases(case: BehaviorCase) -> None:
     result = TendoshkPipeline().run(case["input_text"])
 
-    assert result.classification.tipo_entrada == case["expected_classification"]
-    assert result.npt_prep.artifact_type == case["expected_npt_prep"]
+    assert result.classification.tipo_entrada == case["expected_classification"], case["title"]
+    assert result.npt_prep.artifact_type == case["expected_npt_prep"], case["rationale"]
