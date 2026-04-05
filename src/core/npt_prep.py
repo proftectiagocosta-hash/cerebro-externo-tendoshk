@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from src.agents.curator import ChatIndexArtifact, NPTEntryArtifact
 from src.agents.curator_renderer import render_chat_index_block, render_npt_entry_block
 from src.core.npt_semantic_signals import (
+    has_low_canonicity_multi_intent_signals,
     has_low_maturity_protocol_signals,
     has_low_signal_chat_noise,
     has_review_required_technical_signals,
@@ -39,7 +40,10 @@ class NPTPrep:
     def prepare(self, pipeline_result: NPTPrepInput) -> NPTPrepResult:
         normalized_content = self._normalize_content(pipeline_result.npt_entry)
 
-        if pipeline_result.classification == "memoria_protocolo" and has_low_maturity_protocol_signals(normalized_content):
+        if pipeline_result.classification == "memoria_protocolo" and (
+            has_low_maturity_protocol_signals(normalized_content)
+            or has_low_canonicity_multi_intent_signals(normalized_content)
+        ):
             return self._build_review_only_result(pipeline_result)
 
         if pipeline_result.classification == "chat_antigo" and has_low_signal_chat_noise(normalized_content):

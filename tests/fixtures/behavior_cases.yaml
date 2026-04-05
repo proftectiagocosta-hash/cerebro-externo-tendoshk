@@ -117,10 +117,10 @@ cases:
   - id: texto_longo_multiplas_intencoes
     title: Texto longo com multiplas intencoes concorrentes
     expected_classification: memoria_protocolo
-    expected_npt_prep: npt_entry
+    expected_npt_prep: review_only
     calibration_status: suspect
     rationale: Caso extenso com sinais concorrentes e carga operacional, potencialmente superpromovido para pre-ingestao por densidade de palavras-chave.
-    notes: Reclassificado como suspect para futura revisao, porque hoje agrega estrategia, governanca, tecnica e ambiente em um unico bloco pouco canonico.
+    notes: Expectativa atualizada para review_only porque mistura sinais estrategicos, tecnicos e operacionais demais para um bloco canonico unico.
     input_text: |
       Precisamos definir a prioridade e a direcao do roadmap do Cerebro Externo, registrar um
       protocolo de governanca para triagem e memoria do fluxo oficial, documentar procedimento de

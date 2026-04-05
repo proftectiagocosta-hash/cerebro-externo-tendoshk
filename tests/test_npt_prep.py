@@ -88,3 +88,35 @@ def test_npt_prep_returns_review_only_for_non_ingestable_content() -> None:
     assert result.eligible is False
     assert result.artifact_type == "review_only"
     assert result.prepared_block == ""
+
+
+def test_npt_prep_returns_review_only_for_low_canonicity_multi_intent_protocol_content() -> None:
+    result = NPTPrep().prepare(
+        NPTPrepInput(
+            classification="memoria_protocolo",
+            project="TENDOSHK_CENTRAL",
+            destination="NPT_NUCLEO_PERSISTENTE_TENDOSHK",
+            chat_index=ChatIndexArtifact(
+                nome_sugerido="Registro",
+                tipo_indexacao="INDEXAR COMO REFERENCIA FRACA",
+                projeto_principal="TENDOSHK_CENTRAL",
+                arquivo_drive="",
+                descricao_curta="Descricao curta",
+                potencial_reutilizacao="medio",
+            ),
+            npt_entry=NPTEntryArtifact(
+                tipo="memoria_protocolo",
+                projeto="TENDOSHK_CENTRAL",
+                subtipo="simulacao_integrada",
+                prioridade="alta",
+                destino="NPT_NUCLEO_PERSISTENTE_TENDOSHK",
+                modo="consolidar",
+                origem="chatgpt",
+                conteudo="Precisamos definir a prioridade e a direcao do roadmap, revisar codigo e json de exportacao, tratar erro de ambiente no WSL e consolidar um procedimento do fluxo oficial.",
+            ),
+        )
+    )
+
+    assert result.eligible is False
+    assert result.artifact_type == "review_only"
+    assert result.prepared_block == ""
