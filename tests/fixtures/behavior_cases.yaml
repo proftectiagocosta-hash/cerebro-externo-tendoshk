@@ -75,7 +75,7 @@ cases:
     title: Rascunho confuso de governanca com baixa qualidade
     expected_classification: memoria_protocolo
     expected_npt_prep: review_only
-    calibration_status: suspect
+    calibration_status: stable
     rationale: Caso de possivel falso positivo, pois menciona governanca e procedimento sem maturidade real de conteudo.
     notes: Expectativa atualizada para review_only porque sinais de rascunho e incompletude devem bloquear pre-ingestao prematura.
     input_text: |
@@ -86,7 +86,7 @@ cases:
     title: Conversa ruidosa que ainda tende a chat_index
     expected_classification: chat_antigo
     expected_npt_prep: review_only
-    calibration_status: suspect
+    calibration_status: stable
     rationale: Caso de possivel falso positivo, pois o texto tem cara de conversa descartavel, mas aciona a heuristica atual.
     notes: Expectativa atualizada para review_only porque sinais de conversa curta e sem profundidade devem barrar indexacao fraca automatica.
     input_text: |
@@ -131,7 +131,7 @@ cases:
     title: Artefato tecnico com chance de falso positivo
     expected_classification: artefato_tecnico
     expected_npt_prep: review_only
-    calibration_status: suspect
+    calibration_status: stable
     rationale: Caso tecnico que talvez devesse cair em review_only no futuro, mas hoje a heuristica tende a npt_entry.
     notes: Expectativa atualizada para review_only porque sinais de instabilidade e revisao pendente reduzem confianca para pre-ingestao.
     input_text: |
