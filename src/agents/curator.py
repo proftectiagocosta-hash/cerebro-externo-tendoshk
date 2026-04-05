@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from src.agents.curator_renderer import render_chat_index_block, render_npt_entry_block
+
 
 @dataclass(frozen=True)
 class CuratorInput:
@@ -27,20 +29,6 @@ class ChatIndexArtifact:
     descricao_curta: str
     potencial_reutilizacao: str
 
-    def render_block(self) -> str:
-        return "\n".join(
-            [
-                "[CHAT_INDEX]",
-                f"nome_sugerido={self.nome_sugerido}",
-                f"tipo_indexacao={self.tipo_indexacao}",
-                f"projeto_principal={self.projeto_principal}",
-                f"arquivo_drive={self.arquivo_drive}",
-                f"descricao_curta={self.descricao_curta}",
-                f"potencial_reutilizacao={self.potencial_reutilizacao}",
-                "[/CHAT_INDEX]",
-            ]
-        )
-
 
 @dataclass(frozen=True)
 class NPTEntryArtifact:
@@ -53,22 +41,6 @@ class NPTEntryArtifact:
     origem: str
     conteudo: str
 
-    def render_block(self) -> str:
-        return "\n".join(
-            [
-                "[NPT_ENTRY]",
-                f"tipo={self.tipo}",
-                f"projeto={self.projeto}",
-                f"subtipo={self.subtipo}",
-                f"prioridade={self.prioridade}",
-                f"destino={self.destino}",
-                f"modo={self.modo}",
-                f"origem={self.origem}",
-                f"conteudo={self.conteudo}",
-                "[/NPT_ENTRY]",
-            ]
-        )
-
 
 @dataclass(frozen=True)
 class CuratorOutput:
@@ -77,13 +49,13 @@ class CuratorOutput:
 
     @property
     def chat_index_block(self) -> str:
-        return self.chat_index.render_block()
+        return render_chat_index_block(self.chat_index)
 
     @property
     def npt_entry_block(self) -> str:
         if self.npt_entry is None:
             return ""
-        return self.npt_entry.render_block()
+        return render_npt_entry_block(self.npt_entry)
 
 
 class Curator:

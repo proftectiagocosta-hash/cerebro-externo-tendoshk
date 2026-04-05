@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from src.agents.curator import ChatIndexArtifact, NPTEntryArtifact
+from src.agents.curator_renderer import render_chat_index_block, render_npt_entry_block
 
 
 @dataclass(frozen=True)
@@ -38,7 +39,7 @@ class NPTPrep:
                 suggested_project=pipeline_result.project or None,
                 suggested_destination=pipeline_result.destination or None,
                 reasoning_short="Conteudo com valor estrutural suficiente para pre-ingestao revisavel no NPT.",
-                prepared_block=pipeline_result.npt_entry.render_block(),
+                prepared_block=render_npt_entry_block(pipeline_result.npt_entry),
             )
 
         if pipeline_result.classification in self.CHAT_INDEX_TYPES:
@@ -49,7 +50,7 @@ class NPTPrep:
                 suggested_project=pipeline_result.project or None,
                 suggested_destination=pipeline_result.destination or None,
                 reasoning_short="Conteudo mais adequado para indexacao e recuperacao futura de contexto.",
-                prepared_block=pipeline_result.chat_index.render_block(),
+                prepared_block=render_chat_index_block(pipeline_result.chat_index),
             )
 
         return NPTPrepResult(
