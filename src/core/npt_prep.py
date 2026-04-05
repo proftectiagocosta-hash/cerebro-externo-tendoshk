@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from src.agents.curator import ChatIndexArtifact, NPTEntryArtifact
+
 
 @dataclass(frozen=True)
 class NPTPrepResult:
@@ -20,13 +22,12 @@ class NPTPrep:
 
     def prepare(self, pipeline_result: dict[str, object]) -> NPTPrepResult:
         classification = str(pipeline_result.get("classification", "") or "")
-        priority = str(pipeline_result.get("priority", "") or "")
         project = str(pipeline_result.get("project", "") or "")
         destination = str(pipeline_result.get("destination", "") or "")
-        chat_index_block = str(pipeline_result.get("chat_index_block", "") or "")
-        npt_entry_block = str(pipeline_result.get("npt_entry_block", "") or "")
+        chat_index = pipeline_result.get("chat_index")
+        npt_entry = pipeline_result.get("npt_entry")
 
-        if classification in self.NPT_ENTRY_TYPES and npt_entry_block:
+        if classification in self.NPT_ENTRY_TYPES and isinstance(npt_entry, NPTEntryArtifact):
             return NPTPrepResult(
                 eligible=True,
                 artifact_type="npt_entry",
@@ -34,10 +35,10 @@ class NPTPrep:
                 suggested_project=project or None,
                 suggested_destination=destination or None,
                 reasoning_short="Conteudo com valor estrutural suficiente para pre-ingestao revisavel no NPT.",
-                prepared_block=npt_entry_block,
+                prepared_block=npt_entry.render_block(),
             )
 
-        if classification in self.CHAT_INDEX_TYPES and chat_index_block:
+        if classification in self.CHAT_INDEX_TYPES and isinstance(chat_index, ChatIndexArtifact):
             return NPTPrepResult(
                 eligible=True,
                 artifact_type="chat_index",
@@ -45,7 +46,7 @@ class NPTPrep:
                 suggested_project=project or None,
                 suggested_destination=destination or None,
                 reasoning_short="Conteudo mais adequado para indexacao e recuperacao futura de contexto.",
-                prepared_block=chat_index_block,
+                prepared_block=chat_index.render_block(),
             )
 
         return NPTPrepResult(

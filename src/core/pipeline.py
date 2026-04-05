@@ -60,6 +60,8 @@ class TendoshkPipeline:
                 "priority": priority_result.classificacao,
                 "project": routing_result.projeto_sugerido,
                 "destination": routing_result.destino_sugerido,
+                "chat_index": curated_output.chat_index,
+                "npt_entry": curated_output.npt_entry,
                 "chat_index_block": curated_output.chat_index_block,
                 "npt_entry_block": curated_output.npt_entry_block,
             }

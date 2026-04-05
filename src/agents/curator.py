@@ -19,54 +19,108 @@ class CuratorInput:
 
 
 @dataclass(frozen=True)
-class CuratorOutput:
-    chat_index_block: str
-    npt_entry_block: str
+class ChatIndexArtifact:
+    nome_sugerido: str
+    tipo_indexacao: str
+    projeto_principal: str
+    arquivo_drive: str
+    descricao_curta: str
+    potencial_reutilizacao: str
 
-
-class Curator:
-    def curate(self, data: CuratorInput) -> CuratorOutput:
-        chat_index_block = self._build_chat_index_block(data)
-        npt_entry_block = ""
-
-        if data.tipo_entrada != "indefinido":
-            npt_entry_block = self._build_npt_entry_block(data)
-
-        return CuratorOutput(
-            chat_index_block=chat_index_block,
-            npt_entry_block=npt_entry_block,
-        )
-
-    @staticmethod
-    def _build_chat_index_block(data: CuratorInput) -> str:
+    def render_block(self) -> str:
         return "\n".join(
             [
                 "[CHAT_INDEX]",
-                f"nome_sugerido={data.titulo_sugerido}",
-                f"tipo_indexacao={data.tipo_indexacao}",
-                f"projeto_principal={data.projeto_principal}",
-                f"arquivo_drive={data.arquivo_drive}",
-                f"descricao_curta={data.descricao_curta}",
-                f"potencial_reutilizacao={data.potencial_reutilizacao}",
+                f"nome_sugerido={self.nome_sugerido}",
+                f"tipo_indexacao={self.tipo_indexacao}",
+                f"projeto_principal={self.projeto_principal}",
+                f"arquivo_drive={self.arquivo_drive}",
+                f"descricao_curta={self.descricao_curta}",
+                f"potencial_reutilizacao={self.potencial_reutilizacao}",
                 "[/CHAT_INDEX]",
             ]
         )
 
-    @staticmethod
-    def _build_npt_entry_block(data: CuratorInput) -> str:
+
+@dataclass(frozen=True)
+class NPTEntryArtifact:
+    tipo: str
+    projeto: str
+    subtipo: str
+    prioridade: str
+    destino: str
+    modo: str
+    origem: str
+    conteudo: str
+
+    def render_block(self) -> str:
         return "\n".join(
             [
                 "[NPT_ENTRY]",
-                f"tipo={data.tipo_entrada}",
-                f"projeto={data.projeto_principal}",
-                f"subtipo={data.subtipo}",
-                f"prioridade={data.prioridade}",
-                f"destino={data.destino}",
-                "modo=consolidar",
-                "origem=chatgpt",
-                f"conteudo={data.conteudo}",
+                f"tipo={self.tipo}",
+                f"projeto={self.projeto}",
+                f"subtipo={self.subtipo}",
+                f"prioridade={self.prioridade}",
+                f"destino={self.destino}",
+                f"modo={self.modo}",
+                f"origem={self.origem}",
+                f"conteudo={self.conteudo}",
                 "[/NPT_ENTRY]",
             ]
+        )
+
+
+@dataclass(frozen=True)
+class CuratorOutput:
+    chat_index: ChatIndexArtifact
+    npt_entry: NPTEntryArtifact | None
+
+    @property
+    def chat_index_block(self) -> str:
+        return self.chat_index.render_block()
+
+    @property
+    def npt_entry_block(self) -> str:
+        if self.npt_entry is None:
+            return ""
+        return self.npt_entry.render_block()
+
+
+class Curator:
+    def curate(self, data: CuratorInput) -> CuratorOutput:
+        chat_index = self._build_chat_index_artifact(data)
+        npt_entry = None
+
+        if data.tipo_entrada != "indefinido":
+            npt_entry = self._build_npt_entry_artifact(data)
+
+        return CuratorOutput(
+            chat_index=chat_index,
+            npt_entry=npt_entry,
+        )
+
+    @staticmethod
+    def _build_chat_index_artifact(data: CuratorInput) -> ChatIndexArtifact:
+        return ChatIndexArtifact(
+            nome_sugerido=data.titulo_sugerido,
+            tipo_indexacao=data.tipo_indexacao,
+            projeto_principal=data.projeto_principal,
+            arquivo_drive=data.arquivo_drive,
+            descricao_curta=data.descricao_curta,
+            potencial_reutilizacao=data.potencial_reutilizacao,
+        )
+
+    @staticmethod
+    def _build_npt_entry_artifact(data: CuratorInput) -> NPTEntryArtifact:
+        return NPTEntryArtifact(
+            tipo=data.tipo_entrada,
+            projeto=data.projeto_principal,
+            subtipo=data.subtipo,
+            prioridade=data.prioridade,
+            destino=data.destino,
+            modo="consolidar",
+            origem="chatgpt",
+            conteudo=data.conteudo,
         )
 
 
