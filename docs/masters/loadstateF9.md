@@ -1,17 +1,20 @@
 # loadstateF9 — Constituição Permanente de Load State e Retomada do Cérebro Tendoshk
 
 ## Natureza
-A `loadstateF9` é uma peça permanente e soberana da arquitetura do Cérebro Externo Tendoshk. Sua função é governar o processo de retomada entre chats, restauração de estado de uma linha de trabalho, consulta ao repositório oficial, localização do checkpoint mais recente ou mais compatível conforme o modo acionado e reposicionamento operacional do trabalho. Esta peça só deve ser alterada por decisão explícita do usuário.
+A `loadstateF9` é uma peça permanente e soberana da arquitetura do Cérebro Externo Tendoshk. Sua função é governar o processo de retomada entre chats, restauração de estado de uma linha de trabalho, consulta ao repositório oficial, localização do checkpoint mais recente ou mais compatível conforme o modo acionado, avaliação de compatibilidade contextual com o chat evocador e reposicionamento operacional do trabalho. Esta peça só deve ser alterada por decisão explícita do usuário.
 
 ## Função
 A `loadstateF9` existe para definir, de forma estável:
+
 - quando executar load state
 - como localizar o repositório correto
 - como localizar este arquivo mestre
 - como localizar o checkpoint correto
 - como restaurar o estado de uma linha
+- como avaliar a compatibilidade entre o checkpoint e o chat evocador
 - como responder de forma objetiva e confiável
 - como evitar falsas retomadas
+- como evitar falsas aplicações do estado carregado
 - como impedir mistura entre load, save e curadoria
 - como operar em modo direto ou em modo assistido sem ambiguidade
 
@@ -42,6 +45,7 @@ Ela apenas:
 - restaura
 - reposiciona
 - lista opções quando estiver em modo assistido
+- avalia compatibilidade contextual antes da aplicação final do estado
 
 ## Regra de acionamento
 
@@ -61,8 +65,10 @@ o procedimento correto é:
 5. aplicar suas regras
 6. localizar o checkpoint válido mais recente em `docs/checkpoints/`
 7. se a listagem direta for insuficiente, executar busca expandida pela trilha versionada do repositório
-8. restaurar o estado exato da linha contida nesse checkpoint
-9. responder com a saída operacional exigida
+8. localizar o checkpoint cronologicamente soberano
+9. avaliar a compatibilidade contextual entre o checkpoint localizado e o chat evocador
+10. aplicar o estado segundo o regime correto de compatibilidade
+11. responder com a saída operacional exigida
 
 ### 2. Carga assistida por lista recente
 Quando o usuário disser:
@@ -109,12 +115,14 @@ o procedimento correto é:
 
 ## Objetivo do load state
 O objetivo do load state é restaurar, com o máximo de fidelidade prática possível:
+
 - onde a linha realmente está
 - o que já foi decidido
 - o que está em aberto
 - o próximo passo exato
 - o que não deve ser reaberto sem motivo forte
 - o eixo dominante da continuidade
+- a relação correta entre o estado salvo e o contexto atual do chat evocador
 
 ### Regra crítica
 Load state não é comentário sobre o projeto.  
@@ -131,7 +139,7 @@ Comando:
 Natureza:
 - carga automática
 - cronológica
-- sem etapa intermediária de escolha
+- sem etapa intermediária de escolha de checkpoint
 - usa o checkpoint válido mais recente
 
 Uso ideal:
@@ -170,7 +178,7 @@ Uso ideal:
 ### Regra soberana derivada
 A semântica continua valiosa, mas não governa sozinha toda retomada.  
 No modo direto, governa a cronologia válida.  
-No modo assistido, governa a navegação e a escolha consciente.
+Nos modos assistidos, governa a navegação e a escolha consciente.
 
 ## Ordem obrigatória da retomada
 Toda retomada sob esta peça deve obedecer a esta ordem:
@@ -190,10 +198,13 @@ Depois de ler esta peça, o sistema deve:
 - ou localizar a lista recente no modo assistido por lista
 - ou localizar checkpoints compatíveis no modo assistido por filtro
 
-### 5. Restaurar estado
-Com base no checkpoint encontrado e, se necessário, no estado atual do repositório.
+### 5. Avaliar a compatibilidade contextual
+Depois de localizar o checkpoint aplicável, o sistema deve avaliar a compatibilidade entre o estado salvo e o contexto local já vivo no chat evocador.
 
-### 6. Entregar a resposta final
+### 6. Restaurar estado
+Com base no checkpoint encontrado e, quando necessário, no estado atual do repositório e na classificação contextual do chat evocador.
+
+### 7. Entregar a resposta final
 No modo direto, somente com:
 1. onde paramos
 2. o que já foi decidido
@@ -217,9 +228,9 @@ Quando o comando for:
 a busca deve localizar:
 - checkpoints válidos em `docs/checkpoints/`
 - arquivos no padrão esperado
-- o checkpoint mais recente pelo timestamp embutido no nome
+- o checkpoint mais recente pelo timestamp embutido no nome ou pelo melhor rastro cronológico confiável disponível
 
-Neste modo, a cronologia governa a escolha final.
+Neste modo, a cronologia governa a escolha final do checkpoint.
 
 ### No modo assistido por lista recente
 Quando o comando for:
@@ -241,7 +252,7 @@ Quando o comando for:
 a busca deve localizar:
 - checkpoints válidos em `docs/checkpoints/`
 - candidatos compatíveis com a string fornecida
-- correspondência por nome, projeto, linha de trabalho, onde paramos, próximo passo e outros campos úteis
+- correspondência por nome, projeto, linha de trabalho, onde paramos, objetivo ativo, próximo passo e outros campos úteis
 
 Neste modo, a compatibilidade ajuda a montar a lista, mas não deve substituir a escolha do usuário quando houver ambiguidade relevante.
 
@@ -273,7 +284,7 @@ Antes de escolher ou listar, identificar qual modo foi acionado:
 
 ### Camada 4 — seleção de candidatos
 #### No modo direto cronológico
-Selecionar checkpoints válidos e escolher o mais recente pelo timestamp do nome.
+Selecionar checkpoints válidos e escolher o mais recente pelo timestamp do nome ou pelo melhor rastro cronológico confiável disponível.
 
 #### No modo assistido por lista recente
 Selecionar os checkpoints válidos mais recentes e montar uma lista para o usuário.
@@ -341,6 +352,7 @@ Se a listagem direta for insuficiente, o sistema deve buscar na trilha versionad
 - commits recentes cuja mensagem mencione `checkpoint`
 - commits recentes que contenham diff com criação de arquivo de checkpoint
 - referências explícitas a arquivos `docs/checkpoints/checkpoint_*.md`
+- referências explícitas a arquivos equivalentes de checkpoint canônico, mesmo quando a convenção de nome ainda estiver em transição
 
 #### Etapa 4 — recuperação do checkpoint pela trilha versionada
 Se um commit recente revelar a criação ou atualização de checkpoint válido, o sistema deve tratar esse rastro como evidência operacional suficiente para:
@@ -350,7 +362,7 @@ Se um commit recente revelar a criação ou atualização de checkpoint válido,
 - restaurar ou listar checkpoints conforme o modo acionado
 
 ### Regra crítica
-Quando a trilha versionada revelar de forma clara a existência de um checkpoint canônico em `docs/checkpoints/`, o sistema não deve continuar afirmando ausência de checkpoint apenas porque a listagem direta da pasta falhou.
+Quando a trilha versionada revelar de forma clara a existência de um checkpoint canônico, o sistema não deve continuar afirmando ausência de checkpoint apenas porque a listagem direta da pasta falhou.
 
 #### Etapa 5 — aplicação por modo
 
@@ -362,8 +374,9 @@ Se a listagem direta falhar, mas a trilha versionada revelar checkpoints válido
 1. identificar os checkpoints canônicos encontrados pela trilha versionada
 2. ordenar pela recência válida
 3. selecionar o mais recente
-4. restaurar o estado correspondente
-5. entregar a resposta final no formato de carga direta
+4. avaliar a compatibilidade contextual com o chat evocador
+5. restaurar o estado correspondente
+6. entregar a resposta final no formato de carga direta
 
 ### No modo assistido por lista recente
 Comando:
@@ -381,7 +394,7 @@ Comando:
 
 Se a listagem direta falhar, mas a trilha versionada revelar checkpoints válidos, o sistema deve:
 1. localizar checkpoints compatíveis pela string
-2. usar nome do arquivo, linha de trabalho, projeto, onde paramos, próximo passo e campos equivalentes como base de compatibilidade
+2. usar nome do arquivo, linha de trabalho, projeto, onde paramos, objetivo ativo, próximo passo e campos equivalentes como base de compatibilidade
 3. ordenar os candidatos
 4. montar lista navegável para escolha do usuário
 
@@ -392,9 +405,10 @@ Se a listagem direta falhar, mas a trilha versionada revelar checkpoints válido
 - commit que mostre a criação explícita de `docs/checkpoints/checkpoint_*.md`
 - diff de commit contendo o conteúdo integral ou substancial do checkpoint
 - referência clara e verificável ao arquivo canônico de checkpoint dentro do repositório oficial
+- evidência clara de checkpoint canônico em caminho estrutural equivalente quando a convenção exata de pastas ou nomes ainda estiver em transição, desde que o rastro seja inequívoco
 
 ### Regra crítica
-Se houver evidência operacional suficiente, o sistema deve operar sobre ela.
+Se houver evidência operacional suficiente, o sistema deve operar sobre ela.  
 Não deve exigir, sem necessidade, que o usuário forneça manualmente hash, nome exato ou caminho completo de um checkpoint que já está rastreável no repositório.
 
 ## Regra de ausência real reforçada
@@ -417,27 +431,187 @@ O `quickloadF9 no github` existe para entrar no último estado salvo válido com
 Logo:
 - ele não deve depender apenas da primeira forma de listagem disponível
 - ele deve insistir na localização do checkpoint pela trilha oficial do repositório
+- ele deve avaliar a compatibilidade contextual antes de aplicar o checkpoint ao chat evocador
 - ele só deve falhar quando a ausência real estiver suficientemente confirmada
 
 ### Regra soberana derivada
-No `quickloadF9`, a cronologia soberana deve ser aplicada sobre o melhor rastro confiável disponível do checkpoint canônico, e não apenas sobre a primeira listagem estrutural da pasta.
+No `quickloadF9`, a cronologia soberana governa a seleção do checkpoint, mas a compatibilidade contextual governa a forma correta de entrada desse checkpoint no chat evocador.
+
+## Cláusula de compatibilidade contextual pós-localização e pré-aplicação do estado
+
+Após localizar o checkpoint que seria usado na retomada, o sistema não deve presumir automaticamente que o estado carregado pode assumir, sem mediação, o eixo dominante do chat atual.
+
+A localização correta do checkpoint não equivale, por si só, à autorização de sobreposição imediata do contexto local.
+
+Antes de aplicar o estado restaurado ao chat evocador, a `loadstateF9` deve executar uma leitura do contexto já vivo naquele próprio chat, com a finalidade de determinar se a restauração:
+- confirma a linha já ativa
+- complementa a linha já ativa
+- conflita com a linha já ativa
+- ou desloca o eixo atual do chat
+
+### Regra crítica
+É proibido tratar como continuidade única dois estados que ainda não tiveram sua compatibilidade contextual avaliada.
+
+### Regra crítica
+Localizar checkpoint não é o mesmo que sobrepor o chat.
+
+### Regra soberana derivada
+A `loadstateF9` deve distinguir, de forma explícita, duas etapas diferentes:
+1. localização do estado salvo
+2. aplicação do estado salvo ao contexto local do chat evocador
+
+Essas etapas são correlatas, mas não idênticas.
+
+## Objetivo da compatibilidade contextual
+
+A compatibilidade contextual existe para impedir quatro degradações:
+1. sobrescrita silenciosa do andamento local do chat
+2. fusão indevida entre checkpoint carregado e raciocínio já vivo
+3. falsa continuidade entre linhas distintas
+4. apagamento do presente do chat por simples recência cronológica do checkpoint
+
+### Regra crítica
+O checkpoint mais recente pode ser o mais recente do repositório sem ser, necessariamente, o eixo correto de aplicação imediata sobre o contexto já vivo do chat atual.
+
+## Momento obrigatório da avaliação contextual
+
+A avaliação de compatibilidade contextual deve ocorrer:
+- depois que o checkpoint for localizado corretamente
+- antes que o estado restaurado seja assumido como eixo efetivo do chat
+
+### Regra crítica
+Se essa avaliação não ocorreu, a restauração não está completa.
+
+## O que deve ser observado no chat evocador
+
+Antes da aplicação do estado, a `loadstateF9` deve observar, sempre que possível:
+- se o chat está novo, vazio ou estruturalmente neutro
+- se o chat já desenvolveu linha própria de raciocínio
+- se o conteúdo já ativo no chat trata da mesma linha do checkpoint
+- se o conteúdo já ativo no chat trata apenas de tema adjacente
+- se o conteúdo já ativo no chat está em frente divergente
+- se o chat atual já gerou correções, hipóteses, decisões ou ajustes posteriores ao estado salvo
+- se o próprio load está sendo discutido, testado ou depurado no chat atual
+
+### Regra crítica
+A `loadstateF9` deve considerar não apenas o tema geral, mas a linha efetiva em andamento no chat.
+
+## Classificação obrigatória de compatibilidade
+
+Após a leitura do contexto local, a `loadstateF9` deve classificar a compatibilidade entre checkpoint e chat evocador em uma das quatro categorias abaixo.
+
+### 1. Compatibilidade neutra
+O chat atual está novo, vazio, neutro ou ainda não consolidou uma linha relevante própria.
+
+#### Aplicação correta
+- aplicar o checkpoint diretamente
+- assumir o estado carregado como eixo dominante do chat
+- prosseguir com restauração normal
+
+#### Regra soberana derivada
+Em compatibilidade neutra, a carga direta é permitida.
+
+### 2. Compatibilidade alta
+O chat atual já está trabalhando substancialmente a mesma linha do checkpoint, sem conflito estrutural relevante.
+
+#### Aplicação correta
+- restaurar o checkpoint
+- concatenar o estado carregado ao fluxo local
+- explicitar que a restauração foi compatível com a linha já viva no chat
+
+#### Regra soberana derivada
+Em compatibilidade alta, a `loadstateF9` pode concatenar naturalmente o estado salvo ao andamento atual.
+
+### 3. Compatibilidade parcial
+O chat atual possui interseção real com a linha carregada, mas também contém elaboração local própria, ajuste novo, refinamento novo ou desdobramento que não deve ser apagado silenciosamente.
+
+#### Aplicação correta
+- restaurar o checkpoint como base rastreável
+- explicitar o que veio do estado salvo
+- explicitar o que já estava ativo no chat atual
+- tratar a fusão como concatenação interpretada, e não como identidade automática entre as duas linhas
+
+#### Regra crítica
+Compatibilidade parcial não autoriza fusão silenciosa.
+
+#### Regra soberana derivada
+Em compatibilidade parcial, a `loadstateF9` deve explicitar que está concatenando estado salvo com contexto local vivo.
+
+### 4. Compatibilidade divergente
+O chat atual já está em outra frente real, outra linha dominante, outro projeto efetivo ou outro eixo estrutural que não coincide de forma suficiente com o checkpoint localizado.
+
+#### Aplicação correta
+- não tratar a restauração como continuação natural do que o chat já vinha fazendo
+- explicitar que o checkpoint localizado pertence a outra linha dominante
+- avisar que sua aplicação deslocará ou sobrescreverá o eixo atual do chat
+- preservar honestidade operacional sobre essa mudança de trilho
+
+#### Regra crítica
+Compatibilidade divergente não autoriza sobreposição silenciosa do andamento local.
+
+#### Regra soberana derivada
+Em divergência relevante, a `loadstateF9` deve avisar explicitamente que a aplicação do estado carregado desloca o eixo vivo do chat.
+
+## Regra específica para quickloadF9
+
+O `quickloadF9 no github` continua sendo um comando de carga direta cronológica quanto à seleção do checkpoint.
+
+Isso significa que:
+- ele não lista opções antes
+- ele não pede navegação manual entre checkpoints
+- ele continua escolhendo o checkpoint válido mais recente segundo a cronologia soberana
+
+Entretanto, essa carga direta cronológica não elimina a obrigação de avaliar a compatibilidade contextual com o chat evocador.
+
+### Regra crítica
+O `quickloadF9` pode ser direto na escolha do checkpoint sem ser cego na aplicação do checkpoint ao chat atual.
+
+### Regra soberana derivada
+“Carga direta” significa:
+- seleção direta do estado salvo
+
+e não:
+- sobreposição cega do contexto local.
+
+## Regra específica para loadstateF9 assistido
+
+Nos modos assistidos:
+- `loadstateF9 no github`
+- `loadstateF9 <string> no github`
+
+a compatibilidade contextual também continua valendo.
+
+Entretanto, nesses casos, a avaliação contextual atua principalmente:
+- para ordenar melhor a leitura da situação
+- para evitar falsa restauração
+- para impedir que a listagem seja tratada como se já tivesse havido aplicação do estado
+
+### Regra crítica
+Listar checkpoints não é restaurar estado.
+
+### Regra crítica
+Avaliar compatibilidade contextual não transforma listagem em carga.
 
 ## Regra de compatibilidade semântica
+
 Ao avaliar compatibilidade do checkpoint, considerar:
 - projeto dominante
 - linha de trabalho
 - módulos citados
 - arquivos centrais mencionados
 - decisões preservadas
+- objetivo ativo
 - próximo passo registrado
 - trava anti-dispersão
 - estado do repositório
+- estado atual do chat evocador
 
 ### Regra derivada
 Se houver mais de uma linha viva no repositório, o sistema deve escolher a que mais se alinha à linha evocada pelo contexto do chat atual apenas quando estiver em modo direto semanticamente autorizado.  
 Nos modos assistidos, essa compatibilidade deve servir para montar ou ordenar a lista, não para eliminar a escolha do usuário sem necessidade.
 
 ## Regra de honestidade operacional
+
 A retomada deve explicitar o modo de verificação usado.
 
 ### Modos possíveis
@@ -450,12 +624,17 @@ Se o repositório foi consultado, isso deve ser dito explicitamente.
 Se o checkpoint foi encontrado, isso deve ser dito explicitamente.  
 Se houve incerteza, isso deve ser dito explicitamente.  
 Se a resposta estiver em modo assistido, isso também deve ser dito explicitamente.  
-Se houve busca expandida pela trilha versionada, isso também deve ser dito explicitamente.
+Se houve busca expandida pela trilha versionada, isso também deve ser dito explicitamente.  
+Se houve avaliação de compatibilidade contextual, isso também deve ser dito explicitamente.  
+Se houve concatenação, isso deve ser dito explicitamente.  
+Se houve deslocamento do eixo do chat, isso deve ser dito explicitamente.
 
 ### Regra crítica
-Não fingir retomada plena quando houve apenas evocação parcial.
+Não fingir retomada plena quando houve apenas evocação parcial.  
+Não fingir identidade perfeita entre checkpoint e contexto local quando essa identidade não foi constatada.
 
 ## O que deve ser restaurado
+
 Sempre que possível, o load state deve restaurar:
 - projeto dominante
 - linha de trabalho
@@ -466,11 +645,13 @@ Sempre que possível, o load state deve restaurar:
 - trava anti-dispersão
 - artefatos relevantes
 - próximo passo exato
+- classificação de compatibilidade contextual aplicada ao chat evocador
 
 ### Regra crítica
 O foco da restauração é a continuidade operacional, não a reprodução total do chat anterior.
 
 ## O que não deve acontecer no load state
+
 Durante o load state, é proibido:
 - gerar checkpoint novo
 - salvar arquivo novo
@@ -482,8 +663,11 @@ Durante o load state, é proibido:
 - substituir checkpoint por opinião solta
 - responder genericamente
 - confundir listagem assistida com restauração efetiva
+- localizar checkpoint e sobrepor o contexto local sem avaliação contextual
+- misturar checkpoint carregado com raciocínio local como se fossem uma única linha já consolidada quando isso ainda não foi validado
 
 ## Critério de falsa retomada
+
 Não considerar a retomada suficiente quando:
 - apenas o tema geral foi lembrado
 - não houve consulta ao repositório mesmo com repo acessível
@@ -496,7 +680,21 @@ Não considerar a retomada suficiente quando:
 - o sistema caiu em resumo genérico
 - o sistema listou opções, mas se comportou como se já tivesse restaurado o estado
 
+## Critério de falsa aplicação
+
+Não considerar a aplicação do estado como correta quando:
+- o checkpoint foi localizado, mas o chat local não foi lido
+- o checkpoint foi tratado como soberano sem avaliação do contexto já vivo
+- a resposta misturou checkpoint e raciocínio local como se fossem uma única linha já consolidada
+- o sistema apagou implicitamente um andamento local relevante
+- houve deslocamento do eixo do chat sem aviso explícito
+- a resposta deu aparência de continuidade unificada quando havia apenas sobreposição indevida
+
+### Regra crítica
+Checkpoint correto com aplicação incorreta continua sendo retomada defeituosa.
+
 ## Regra de fallback
+
 Se o repositório, o arquivo mestre ou os checkpoints não estiverem acessíveis:
 
 1. dizer explicitamente que a retomada está limitada
@@ -508,6 +706,7 @@ Se o repositório, o arquivo mestre ou os checkpoints não estiverem acessíveis
 Fallback não é licença para inventar estado.
 
 ## Relação com o checkpoint
+
 A `loadstateF9` depende do checkpoint como fonte volátil principal.
 
 A relação correta é:
@@ -520,6 +719,7 @@ Load state não substitui checkpoint.
 Sem checkpoint, a retomada fica menos confiável.
 
 ## Relação com o repositório
+
 O repositório GitHub é a trilha versionada de consulta entre chats.
 
 ### Regra
@@ -531,6 +731,19 @@ Quando o usuário disser `quickloadF9 no github`, `loadstateF9 no github` ou `lo
 
 ### Regra crítica
 Em chat novo, o link do repositório não deve ser presumido se não tiver sido enviado no próprio chat.
+
+## Regra de proteção do presente do chat
+
+O estado salvo tem valor soberano como rastro versionado da linha.  
+Mas o contexto local do chat evocador também tem valor operacional quando já contém elaboração viva relevante.
+
+### Regra soberana derivada
+A `loadstateF9` deve restaurar o passado salvo sem apagar indevidamente o presente já ativo do chat.
+
+### Formulação canônica
+Carregar estado não é apagar contexto.  
+Retomar linha não é sequestrar o chat.  
+A cronologia soberana do checkpoint governa a seleção do estado salvo; a compatibilidade contextual governa a forma correta de sua entrada no chat evocador.
 
 ## Regra de listagem assistida de checkpoints
 
@@ -562,6 +775,39 @@ Em modo assistido, o sistema não deve fingir que listar já equivale a restaura
 Listar é listar.  
 Restaurar é carregar o checkpoint escolhido.
 
+## Regra de trava anti-dispersão
+
+Se o checkpoint carregar trava anti-dispersão relevante, o load state deve respeitá-la.
+
+Isso significa:
+- não reabrir fundamentos sem motivo forte
+- não desviar cedo para frentes paralelas
+- não trocar continuidade concreta por expansão prematura
+
+## Regra do “não reabrir sem motivo forte”
+
+Se o checkpoint trouxer um campo equivalente a:
+
+`o_que_nao_reabrir_sem_motivo_forte`
+
+a retomada deve usá-lo como limite operacional da linha.
+
+### Regra crítica
+A retomada correta não apaga travas já registradas.
+
+## Regra de complementação com estado do repo
+
+Depois de localizar o checkpoint, o sistema pode complementar a retomada com leitura do estado atual do repositório, quando isso ajudar a:
+- confirmar continuidade
+- detectar avanço posterior
+- validar arquivos centrais
+- ajustar o próximo passo exato
+- classificar melhor a compatibilidade entre o checkpoint e o contexto do chat evocador
+
+### Regra crítica
+Complementar não significa substituir o checkpoint.  
+O checkpoint continua sendo o núcleo da retomada.
+
 ## Estrutura da resposta obrigatória
 
 A resposta do load state depende do modo acionado.
@@ -577,6 +823,16 @@ Lista curta das decisões reais já consolidadas.
 
 #### 3. O próximo passo exato
 Uma ação concreta, única e executável.
+
+### Regra adicional do modo direto
+A resposta final do modo direto pode mencionar, quando necessário para honestidade operacional:
+- o modo de verificação usado
+- se o repositório foi consultado
+- se houve busca expandida pela trilha versionada
+- a classificação de compatibilidade contextual
+- se a aplicação foi direta, concatenada ou realizada com aviso de deslocamento
+
+Mas não deve se transformar em ensaio, comentário genérico ou discussão aberta.
 
 ### No modo assistido por lista recente
 A resposta deve conter:
@@ -600,45 +856,19 @@ A resposta deve conter:
 - qual checkpoint foi usado
 - se houve busca expandida pela trilha versionada
 - por que houve fallback
+- classificação contextual do chat evocador
 
 ### Regra crítica
 A resposta não deve virar ensaio, diagnóstico aberto ou comentário genérico.
 
-## Regra de trava anti-dispersão
-Se o checkpoint carregar trava anti-dispersão relevante, o load state deve respeitá-la.
-
-Isso significa:
-- não reabrir fundamentos sem motivo forte
-- não desviar cedo para frentes paralelas
-- não trocar continuidade concreta por expansão prematura
-
-## Regra do “não reabrir sem motivo forte”
-Se o checkpoint trouxer um campo equivalente a:
-
-`o_que_nao_reabrir_sem_motivo_forte`
-
-a retomada deve usá-lo como limite operacional da linha.
-
-### Regra crítica
-A retomada correta não apaga travas já registradas.
-
-## Regra de complementação com estado do repo
-Depois de localizar o checkpoint, o sistema pode complementar a retomada com leitura do estado atual do repositório, quando isso ajudar a:
-- confirmar continuidade
-- detectar avanço posterior
-- validar arquivos centrais
-- ajustar o próximo passo exato
-
-### Regra crítica
-Complementar não significa substituir o checkpoint.  
-O checkpoint continua sendo o núcleo da retomada.
-
 ## Critério de sucesso do load state
+
 Um load state é considerado bem-sucedido quando:
 - o repositório foi corretamente identificado
 - esta peça foi lida
 - o checkpoint correto foi localizado
-- a linha dominante foi restaurada
+- a compatibilidade contextual foi avaliada
+- a linha dominante foi restaurada sem falsa aplicação
 - a resposta final trouxe:
   - onde paramos
   - o que já foi decidido
@@ -650,6 +880,7 @@ Nos modos assistidos, o sucesso parcial da primeira etapa consiste em:
 - permitir escolha consciente do usuário sem falsa restauração
 
 ## Microcláusula de natureza e conclusão dos comandos
+
 Os mnemônicos do sistema se dividem em duas classes.
 
 ### 1. Comando de modo
@@ -676,7 +907,7 @@ Natureza:
 - encerram automaticamente ao fim da entrega, conforme sua natureza
 
 ### Regra adicional sobre a família F9
-- `quickloadF9 no github` conclui a restauração ao fim da carga direta
+- `quickloadF9 no github` conclui a restauração ao fim da carga direta e de sua avaliação contextual
 - `loadstateF9 no github` conclui sua primeira etapa ao listar opções, e só conclui a restauração após escolha explícita do usuário
 - `loadstateF9 <string> no github` conclui sua primeira etapa ao listar candidatos compatíveis, e só conclui a restauração após escolha explícita do usuário, salvo instrução inequívoca em contrário
 
@@ -689,6 +920,7 @@ Natureza:
 É proibido confundir comando de modo com comando de ação.
 
 ## Cláusula de estabilidade
+
 Esta peça deve ser tratada como permanente, até segunda ordem.
 
 Ela só deve ser alterada por decisão explícita do usuário.
@@ -696,15 +928,21 @@ Ela só deve ser alterada por decisão explícita do usuário.
 Mudanças de linha, fase ou chat não justificam alteração automática desta peça.
 
 ## Formulação canônica da correção
+
 A `loadstateF9` deve buscar checkpoints primeiro pela pasta canônica `docs/checkpoints/`, mas, se a listagem direta for insuficiente, deve obrigatoriamente recorrer à trilha versionada do repositório oficial antes de concluir ausência real de checkpoint. Em `quickloadF9`, essa busca expandida é parte do próprio dever de restaurar o último estado salvo válido sem depender de apontamento manual do usuário quando o rastro já existir no GitHub.
 
+Além disso, a `loadstateF9` deve distinguir localização do checkpoint e aplicação do checkpoint. O estado salvo encontrado não deve sobrepor silenciosamente uma linha de raciocínio já viva no chat atual. Em chat neutro, a aplicação pode ser direta; em chat alinhado, pode haver concatenação natural; em compatibilidade parcial, deve haver concatenação explicitada; em divergência relevante, o sistema deve avisar que a aplicação deslocará o eixo atual do chat.
+
 ## Regra final
+
 A `loadstateF9` existe para impedir que retomada dependa de:
 - memória implícita
 - reconstrução manual excessiva
 - reexplicação repetida
 - resumo genérico
 - improviso
+- fusão indevida entre checkpoint e contexto local
+- sobrescrita silenciosa do andamento do chat evocador
 
 Ela existe para transformar um novo chat em:
 - continuidade
@@ -712,6 +950,8 @@ Ela existe para transformar um novo chat em:
 - recuperação fiel do ponto da linha
 - retomada operacional confiável
 - navegação consciente entre checkpoints quando houver múltiplas frentes
+- aplicação correta do estado salvo ao contexto real do chat em que foi evocado
 
 Não responder como resumidor.  
-Responder como sistema de load state estrutural do Cérebro Tendoshk.
+Não responder como se todo checkpoint encontrado pudesse governar automaticamente qualquer chat.  
+Responder como sistema de load state estrutural do Cérebro Tendoshk, com rigor versionado, compatibilidade contextual soberana e honestidade operacional.
