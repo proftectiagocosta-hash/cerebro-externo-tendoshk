@@ -16,6 +16,7 @@ A partir da leitura deste arquivo, passam a ficar operacionalmente habilitados n
 - `TGM no github`
 - `tgm no github`
 - `loadstateF9 no github`
+- `quickloadF9 no github`
 - `savestateF5 no github`
 - `curadoriav61 no github`
 
@@ -34,6 +35,7 @@ Com esta ativação enviada no chat:
 Esta ativação não executa automaticamente:
 - `TGM`
 - `loadstateF9`
+- `quickloadF9`
 - `savestateF5`
 - `curadoriav61`
 
@@ -48,6 +50,9 @@ Após esta ativação, cada mnemônico deve ser resolvido prioritariamente pelo 
   → `docs/masters/tgm.md`
 
 - `loadstateF9 no github`
+  → `docs/masters/loadstateF9.md`
+
+- `quickloadF9 no github`
   → `docs/masters/loadstateF9.md`
 
 - `savestateF5 no github`
@@ -67,6 +72,49 @@ Se o arquivo mestre correspondente não for procurado explicitamente primeiro, o
 - aproximação semântica
 - dedução informal
 - improviso operacional
+
+## Cláusula de aceitação de formas abreviadas no chat
+Após esta ativação, o sistema pode aceitar, no fluxo conversacional do chat, **formas abreviadas, parciais ou simplificadas** dos mnemônicos, desde que:
+
+1. exista correspondência inequívoca com um mnemônico já habilitado neste arquivo
+2. a resolução final continue sendo feita pelo arquivo mestre correspondente
+3. não haja ambiguidade operacional relevante entre dois ou mais comandos possíveis
+
+### Exemplos de aceitação conversacional
+- `tgm` pode ser entendido como evocação de `TGM no github`
+- `f9` pode ser entendido como evocação de `loadstateF9 no github`, quando o contexto não apontar ambiguidade
+- `quickload` pode ser entendido como evocação de `quickloadF9 no github`, quando o contexto não apontar ambiguidade
+
+### Regra crítica
+Aceitação conversacional abreviada **não substitui** a resolução determinística por arquivo mestre.  
+Ela apenas facilita a evocação no chat.
+
+### Regra crítica adicional
+Se houver ambiguidade real, o sistema não deve adivinhar silenciosamente.  
+Deve resolver pelo mestre correto quando a correspondência for inequívoca ou pedir explicitação do usuário quando necessário.
+
+## Cláusula de comportamento do load state após ativação
+Após esta ativação, os comandos de retomada passam a obedecer aos seguintes papéis soberanos:
+
+### 1. `quickloadF9 no github`
+- executa carga direta do checkpoint válido mais recente
+- não lista opções antes
+- entra automaticamente no último estado salvo válido
+
+### 2. `loadstateF9 no github`
+- não carrega automaticamente
+- lista checkpoints recentes para escolha do usuário
+- opera em modo assistido por lista
+
+### 3. `loadstateF9 <string> no github`
+- não carrega automaticamente
+- usa a string como pista de busca
+- lista checkpoints compatíveis para escolha do usuário
+- opera em modo assistido por filtro
+
+### Regra crítica
+A ativação deste arquivo não substitui as regras detalhadas do mestre `docs/masters/loadstateF9.md`.  
+Ela apenas torna esses comportamentos utilizáveis neste chat.
 
 ## Regra final
 Após este arquivo ser enviado, considere que o **estado mínimo de mnemônicos do Cérebro Tendoshk** foi ativado neste chat, que o repositório acima passa a reger o sistema neste contexto e que os comandos só devem ser executados por resolução explícita do arquivo mestre correspondente.
