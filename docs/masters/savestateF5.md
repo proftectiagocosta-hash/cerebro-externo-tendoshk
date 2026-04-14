@@ -76,7 +76,10 @@ Todo checkpoint deve explicitar, quando couber: `o_que_nao_reabrir_sem_motivo_fo
 Os checkpoints devem ser salvos em `docs/checkpoints/`.
 
 ### Padrão obrigatório de nome
-`checkpoint_<texto_rastreavel>_AAAA_MM_DD_HH_MM.md`
+`checkpoint_AAAA_MM_DD_HH_MM_<texto_rastreavel>.md`
+
+### Regra estrutural do padrão
+O timestamp vem antes do texto rastreável para alinhar a ordenação alfabética do GitHub com a ordenação cronológica dos checkpoints.
 
 ### Regras para `<texto_rastreavel>`
 - curto
@@ -88,7 +91,7 @@ Os checkpoints devem ser salvos em `docs/checkpoints/`.
 - usar underscore no lugar de espaço
 
 ### Exemplo
-`checkpoint_nptprep_testes_cerebro_externo_2026_04_13_21_42.md`
+`checkpoint_2026_04_13_21_42_nptprep_testes_cerebro_externo.md`
 
 ## Regra de conteúdo do checkpoint
 Todo checkpoint gerado sob esta peça deve obedecer à seguinte estrutura base:
