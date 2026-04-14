@@ -274,7 +274,10 @@ Procurar primeiro na pasta:
 ### Camada 2 — filtro por padrão de nome
 Priorizar arquivos que sigam o padrão:
 
-`checkpoint_<texto_rastreavel>_AAAA_MM_DD_HH_MM.md`
+`checkpoint_AAAA_MM_DD_HH_MM_<texto_rastreavel>.md`
+
+### Regra derivada
+Neste padrão, a ordenação alfabética do nome já favorece a leitura cronológica humana no GitHub.
 
 ### Camada 3 — leitura do modo de carga
 Antes de escolher ou listar, identificar qual modo foi acionado:
@@ -688,7 +691,6 @@ Não considerar a aplicação do estado como correta quando:
 - a resposta misturou checkpoint e raciocínio local como se fossem uma única linha já consolidada
 - o sistema apagou implicitamente um andamento local relevante
 - houve deslocamento do eixo do chat sem aviso explícito
-- a resposta deu aparência de continuidade unificada quando havia apenas sobreposição indevida
 
 ### Regra crítica
 Checkpoint correto com aplicação incorreta continua sendo retomada defeituosa.
