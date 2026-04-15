@@ -154,7 +154,7 @@ Mas toda transição soberana relevante deve deixar rastro suficiente.
 
 Quando houver transição soberana, a versão anterior relevante deve ser preservada em:
 
-`docs/historicos/masters/`
+`docs/historico/masters/`
 
 ### Convenção preferencial de nomes
 
@@ -181,7 +181,7 @@ A versão canônica vigente continua vivendo em:
 
 `docs/masters/`
 
-A pasta de históricos não substitui o master vigente.
+A pasta de histórico não substitui o master vigente.
 
 Ela preserva apenas a formulação anterior relevante como trilha documental de evolução soberana.
 
@@ -203,7 +203,7 @@ Verificar quais masters dependem da peça alterada, quais são carregados por el
 
 ### 4. Preservar a formulação anterior relevante
 
-Mover, copiar ou recriar a versão anterior relevante em `docs/historicos/masters/` com nome rastreável.
+Mover, copiar ou recriar a versão anterior relevante em `docs/historico/masters/` com nome rastreável.
 
 ### 5. Publicar a nova versão canônica
 
