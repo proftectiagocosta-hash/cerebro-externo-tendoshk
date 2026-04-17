@@ -1,7 +1,7 @@
 # savestateF5 — Constituição Permanente de Save State e Geração de Checkpoints do Cérebro Tendoshk
 
 ## Natureza
-A `savestateF5` é uma peça permanente e soberana da arquitetura do Cérebro Externo Tendoshk. Sua função é governar o processo de leitura estrutural do chat para fins de salvamento de estado, geração de checkpoint rastreável, preservação do ponto real da linha de trabalho, continuidade entre sessões e chats, redução de reconstrução manual e proteção contra dispersão e perda de contexto estrutural. Esta peça só deve ser alterada por decisão explícita do usuário.
+A `savestateF5` é uma peça permanente e soberana da arquitetura do Cérebro Tendoshk. Sua função é governar o processo de leitura estrutural do chat para fins de salvamento de estado, geração de checkpoint rastreável, preservação do ponto real da linha de trabalho, continuidade entre sessões e chats, redução de reconstrução manual e proteção contra dispersão e perda de contexto estrutural. Esta peça só deve ser alterada por decisão explícita do usuário.
 
 ## Função
 A `savestateF5` existe para definir, de forma estável: quando executar save state; como analisar o chat para salvar o estado certo; o que deve entrar no checkpoint; o que não deve entrar no checkpoint; como nomear checkpoint; onde salvar checkpoint; como preservar estado estrutural e não apenas resumo superficial; e como manter continuidade confiável entre chats.
@@ -11,6 +11,26 @@ A `savestateF5` governa somente save state. Ela não substitui `curadoriav61`, `
 
 ## Regra de acionamento
 Quando o usuário disser `savestateF5 no github`, o procedimento correto é: verificar se o link do GitHub já foi informado no chat atual; se não foi, solicitar ao usuário; se foi, abrir o repositório; localizar este arquivo mestre; aplicar suas regras ao chat inteiro; gerar um novo checkpoint volátil; salvar esse checkpoint no GitHub; e deixar a autorização final da plataforma concluir a escrita. É proibido gerar checkpoint só com base na última mensagem. O save state deve considerar o chat inteiro e o ponto estrutural dominante da linha.
+
+## Regra de interpretação soberana de pedido de salvamento
+Quando o usuario disser:
+- `salve`
+- `save`
+- `f5`
+- `savestate`
+- `savestateF5`
+
+a interpretacao padrao correta e:
+- o usuario quer salvar checkpoint
+
+### Regra crítica
+Nao misturar automaticamente pedido de save/checkpoint com pedido de criacao, consolidacao ou evocacao de Knot.
+
+### Regra de prudência
+Se houver ambiguidade real ou aumento relevante do risco de erro de interpretacao, o sistema deve:
+- trazer contraponto claro
+- explicitar a duvida
+- ou assumir a leitura mais segura com justificativa curta
 
 ## Objetivo do save state
 O objetivo do save state é preservar, de forma rastreável e segura: onde a linha realmente está; o que já foi decidido; o que não deve ser perdido; o que não deve ser reaberto sem motivo forte; o próximo passo exato; as travas anti-dispersão; os artefatos relevantes do momento; e o estado útil para retomada em chat novo ou no mesmo chat. Save state não é resumo bonito. Save state é estado operacional de continuidade.
@@ -59,6 +79,30 @@ Todo checkpoint gerado sob esta peça deve tentar preservar, no mínimo:
 
 ## O que não deve entrar no checkpoint
 O checkpoint não deve virar dumping de conversa. Evitar incluir: emoção circunstancial sem impacto estrutural; conversa casual; repetição de contexto já embutido no repositório; reflexão aberta sem consequência prática; redundância de regras permanentes já contidas nos arquivos mestres; comentário genérico; verborragia jurídica desnecessária; e múltiplas hipóteses ainda não decididas como se fossem decisões. O checkpoint deve ser enxuto, mas suficiente. Nem raso, nem inflado.
+
+## Separação dura entre checkpoint e Knot
+`checkpoint` e `Knot` sao camadas distintas de persistencia do sistema.
+
+### Checkpoint
+O checkpoint:
+- preserva o estado operacional dominante do chat ou da linha
+- vive em `docs/checkpoints/`
+- serve para retomada estrutural de conversa e estado de trabalho
+
+### Knot
+O Knot:
+- preserva linha viva governavel
+- vive em `docs/sistema/fractal_knot/nos_vivos/`
+- serve para continuidade por identidade propria de frente, tronco, subno ou linha governada
+
+### Regra crítica
+`savestateF5` nao cria Knot por reflexo.
+`savestateF5` governa checkpoint.
+
+Se o usuario quiser criar, consolidar ou evocar Knot, isso deve ser tratado no regime proprio do `FRACTAL_KNOT`, e nao inferido como save state.
+
+### Regra crítica adicional
+A existencia de um Knot pode ser mencionada em checkpoint, e um checkpoint pode ser referenciado por Knot, mas nenhum substitui o outro.
 
 ## Regra de foco estrutural
 O save state deve buscar o eixo dominante da linha de trabalho. Se o chat tocar muitos assuntos, o checkpoint deve priorizar: o núcleo da utilidade futura; a continuidade dominante; o que realmente precisa ser preservado para retomada; e o que evita perda de estado. O checkpoint não deve tentar salvar tudo. Ele deve salvar o que sustenta a continuidade correta.
