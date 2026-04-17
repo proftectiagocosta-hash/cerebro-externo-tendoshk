@@ -15,6 +15,7 @@ A partir da leitura deste arquivo, passam a ficar operacionalmente habilitados n
 
 - `TGM no github`
 - `tgm no github`
+- `KNOT NO GITHUB`
 - `loadstateF9 no github`
 - `quickloadF9 no github`
 - `savestateF5 no github`
@@ -34,6 +35,7 @@ Com esta ativação enviada no chat:
 ## Regra de separação
 Esta ativação não executa automaticamente:
 - `TGM`
+- `KNOT`
 - `loadstateF9`
 - `quickloadF9`
 - `savestateF5`
@@ -48,6 +50,9 @@ Após esta ativação, cada mnemônico deve ser resolvido prioritariamente pelo 
 - `TGM no github`
 - `tgm no github`
   → `docs/masters/tgm.md`
+
+- `KNOT NO GITHUB`
+  → `docs/masters/fractal_knot.md`
 
 - `loadstateF9 no github`
   → `docs/masters/loadstateF9.md`
@@ -82,6 +87,7 @@ Após esta ativação, o sistema pode aceitar, no fluxo conversacional do chat, 
 
 ### Exemplos de aceitação conversacional
 - `tgm` pode ser entendido como evocação de `TGM no github`
+- `knot` pode ser entendido como evocação de `KNOT NO GITHUB`, quando o contexto não apontar ambiguidade
 - `f9` pode ser entendido como evocação de `loadstateF9 no github`, quando o contexto não apontar ambiguidade
 - `quickload` pode ser entendido como evocação de `quickloadF9 no github`, quando o contexto não apontar ambiguidade
 
