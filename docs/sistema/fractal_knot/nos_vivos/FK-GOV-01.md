@@ -22,12 +22,16 @@ sim
 - acao_principal: propagacao do FRACTAL_KNOT no sistema
 - efeito_lateral: revelou lacuna operacional entre evolucao de masters soberanos e execucao versionada real
 - linha_afetada: governanca documental de transicoes em `docs/masters/`
+- acao_principal: entrada da Frente 3 no regime do FRACTAL_KNOT com tronco e subnos iniciais
+- efeito_lateral: reduz dependencia de um chat exclusivo para continuidade e deixa checkpoints mais leves e menos culpados
+- linha_afetada: governanca de continuidade e retomada
 
 ## Evolução de execução relevante
 - ajuste_estrutural_identificado: a transicao soberana de masters foi executada inicialmente sem preservacao imediata dos historicos correspondentes
 - correcao_aplicada: historicos foram criados depois, restaurando a trilha documental
 - aprendizado_estrutural: a regra de historico existente em `EVOLUCAO_MASTERS_SOBERANOS` precisa de amarracao operacional mais dura com `EXECUCAO_REPO`
 - desdobramento_do_no: reforcar a pos-condicao obrigatoria de transicao soberana em masters, impedir fechamento prematuro de operacoes estruturais e reconhecer a autogovernanca do proprio Knot quando sua execucao alterar sua forma de operar
+- maturacao_da_camada_segura: a Frente 4 mostrou estar segura o suficiente para receber a Frente 3 como primeira linha densa governada sem reabrir a prioridade estrutural ja decidida
 
 ## Baixa auditavel
 - status: em_aberto
