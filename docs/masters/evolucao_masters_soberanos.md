@@ -151,6 +151,28 @@ Há transição soberana quando a alteração:
 Nem toda edição merece histórico.  
 Mas toda transição soberana relevante deve deixar rastro suficiente.
 
+## Regra de pós-condição obrigatória da transição soberana
+
+Nenhuma transição soberana em master deve ser considerada concluída enquanto não houver verificação explícita de necessidade de preservação da formulação anterior relevante em:
+
+`docs/historico/masters/`
+
+### Regra obrigatória
+
+Quando a alteração incidir sobre master soberano com mudança estrutural relevante, a operação deve responder explicitamente, antes do fechamento:
+
+- a mudança foi classificada como atualização simples ou transição soberana?
+- houve necessidade de histórico?
+- qual arquivo histórico foi criado, quando aplicável?
+- quais peças correlatas foram revisadas?
+- a validação final foi feita por caminho canônico?
+
+### Regra crítica
+
+É proibido encerrar como concluída uma alteração estrutural em master soberano apenas porque o novo texto vigente foi atualizado com sucesso.
+
+Sem checagem explícita de histórico e sem validação mínima da trilha documental, a transição deve ser tratada como incompleta.
+
 ## Estrutura documental de histórico
 
 Quando houver transição soberana, a versão anterior relevante deve ser preservada em:
