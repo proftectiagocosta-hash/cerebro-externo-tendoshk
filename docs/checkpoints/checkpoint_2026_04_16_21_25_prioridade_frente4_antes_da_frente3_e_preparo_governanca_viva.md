@@ -29,9 +29,23 @@
 - anseios_e_ideias_para_o_futuro: inaugurar um padrao em que o cerebro passe a gerir frentes e projetos vivos junto de Tiago; criar uma caixa de frentes com tokens, baixa auditavel e captura transversal; permitir foco ativo sem apagar laterais valiosas; preparar NPT/Drive e GitHub para receber esse novo padrao sem perder o porquê.
 
 ## artefatos_e_fontes
-- arquivos_relevantes: `docs/checkpoints/checkpoint_2026_04_15_14_24_panorama_multifrentes_governanca_continuidade_e_frentes_abertas.md`; `docs/estado/panorama_multifrentes_atual.md`; `docs/masters/loadstateF9.md`; `docs/masters/savestateF5.md`; `docs/masters/execucao_repo.md`
+- arquivos_relevantes: `docs/checkpoints/checkpoint_2026_04_15_14_24_panorama_multifrentes_governanca_continuidade_e_frentes_abertas.md`; `docs/estado/panorama_multifrentes_atual.md`; `docs/estado/prioridade_frente4_preparo_para_frente3_e_gestao_conjunta.md`; `docs/masters/loadstateF9.md`; `docs/masters/savestateF5.md`; `docs/masters/execucao_repo.md`
 - modulos_relevantes: governanca multifrentes; continuidade verificavel; save state; load state; execucao versionada honesta
 - testes_relevantes: validacao contextual do load em modo assistido; reavaliacao explicita da prioridade entre Frente 3 e Frente 4 com preservacao do porquê
+
+## estado_complementar_obrigatorio
+- arquivo: `docs/estado/prioridade_frente4_preparo_para_frente3_e_gestao_conjunta.md`
+- funcao: preservar o porquê vivo da prioridade da Frente 4, impedir releitura da decisao como preferencia tatica local e reforcar a transicao para um novo padrao de gestao conjunta de frentes e projetos pelo cerebro junto de Tiago.
+
+### regra_obrigatoria_de_retomada
+Na proxima retomada relevante desta linha, o load deve:
+1. localizar este checkpoint
+2. abrir `docs/estado/prioridade_frente4_preparo_para_frente3_e_gestao_conjunta.md`
+3. reler o porquê da prioridade da Frente 4 antes da Frente 3
+4. so depois modelar a versao minima funcional da Frente 4 ou decidir qualquer aprofundamento da Frente 3
+
+### regra_critica
+Nao tratar este checkpoint como suficiente por si so para decidir aprofundamento da Frente 3 sem abrir o estado complementar que preserva o porquê da prioridade estrutural da Frente 4.
 
 ## proximo_passo
 - proximo_passo_exato: desenhar a versao minima funcional da Frente 4 como estrutura viva de governanca de frentes/projetos, definindo objetivo, papel, estados possiveis, tokens curtos, regra de baixa auditavel, regra de captura transversal e relacao com checkpoint sem sequestrar o eixo.
