@@ -206,6 +206,28 @@ Ao final, classificar explicitamente a operação como:
 - bloqueado por limitação real
 - devolvido ao usuário por preferência explícita dele
 
+## Regra de escrita em masters soberanos
+
+Quando a escrita real incidir sobre arquivos em:
+
+`docs/masters/`
+
+o sistema deve verificar se a mudança é apenas atualização simples ou se configura transição soberana nos termos de `EVOLUCAO_MASTERS_SOBERANOS`.
+
+### Procedimento obrigatório
+
+Se a mudança for estruturalmente relevante, a operação só pode ser considerada íntegra após:
+
+1. classificação explícita da alteração
+2. verificação de necessidade de histórico em `docs/historico/masters/`
+3. preservação da formulação anterior relevante, quando aplicável
+4. revisão das peças correlatas afetadas
+5. validação final da trilha por caminho canônico
+
+### Regra crítica
+
+É proibido encerrar a execução versionada de alteração em master soberano apenas com atualização do arquivo vigente, quando a mudança exigir transição soberana rastreável.
+
 ## Regra contra atalho manual indevido
 
 É proibido substituir escrita real por:
