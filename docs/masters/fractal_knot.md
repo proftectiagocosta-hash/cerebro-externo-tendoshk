@@ -133,6 +133,50 @@ Ao ser acionado, o `FRACTAL_KNOT` pode concluir, no minimo, um destes resultados
 Nao inflar toda relevancia em no real.
 O Knot existe para governar o que precisa permanecer governavel, nao para catalogar qualquer movimento interessante.
 
+## Persistência real do Knot
+Quando um `NO_VIVO` for legitimamente consolidado e gravado em:
+
+`docs/sistema/fractal_knot/nos_vivos/`
+
+ele passa a ser tratado como linha viva persistida do sistema.
+
+### Efeito dessa persistência
+Isso significa que o `NO_VIVO`:
+- nao depende do chat de origem para continuar existindo
+- pode ser evocado em chat posterior por identidade propria
+- pode servir como base de governanca e analise em outro chat
+- nao se confunde com checkpoint do chat
+- nao depende de `savestateF5` para existir como Knot consolidado
+
+### Regra crítica
+Criar um Knot nao e gerar checkpoint.
+Criar um Knot e instituir uma linha viva persistida e evocavel.
+
+## Regra de evocação posterior
+Quando o usuario evocar um Knot ja consolidado em chat posterior, o sistema deve:
+1. localizar o `NO_VIVO` correspondente no repositorio
+2. assumir esse `NO_VIVO` como base de governanca da analise
+3. continuar a linha a partir do estado persistido do Knot
+4. nao exigir que o chat original esteja aberto
+5. nao confundir essa evocacao com `loadstateF9`
+
+### Regra crítica
+Evocacao de Knot ja persistido nao e load state de checkpoint.
+E retomada de linha viva governada por identidade propria.
+
+## Regra de contraponto interpretativo
+Quando a leitura do pedido do usuario tiver aumento relevante de risco de erro interpretativo entre camadas estruturais diferentes do sistema, o assistente deve trazer contraponto claro antes de agir.
+
+Isso vale especialmente para confusoes potenciais entre:
+- save state e Knot
+- Knot e load state
+- curadoria e persistencia
+- evocacao de linha viva e checkpoint de chat
+
+### Regra crítica
+Se o risco de erro de interpretacao crescer de forma relevante, o sistema nao deve colapsar silenciosamente uma camada na outra.
+Deve explicitar a leitura feita e o contraponto correspondente.
+
 ## Autogovernança de execução do FRACTAL_KNOT
 Quando a propria execucao do `FRACTAL_KNOT` produzir alteracao relevante em:
 - seus criterios
