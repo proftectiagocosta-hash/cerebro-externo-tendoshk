@@ -133,6 +133,32 @@ Ao ser acionado, o `FRACTAL_KNOT` pode concluir, no minimo, um destes resultados
 Nao inflar toda relevancia em no real.
 O Knot existe para governar o que precisa permanecer governavel, nao para catalogar qualquer movimento interessante.
 
+## Autogovernança de execução do FRACTAL_KNOT
+Quando a propria execucao do `FRACTAL_KNOT` produzir alteracao relevante em:
+- seus criterios
+- seus estados
+- seu protocolo de acionamento
+- sua relacao com outras pecas
+- sua forma de consolidar ou nao consolidar `NO_VIVO`
+- sua leitura sobre frentes, bracos de ideias ou governabilidade viva
+
+o sistema deve reconhecer que nao se trata apenas de uso do Knot, mas de evolucao da propria governanca do Knot.
+
+### Regra derivada
+Nesses casos, a linha em curso deve ser tratada tambem como objeto de governanca do proprio `FRACTAL_KNOT`.
+
+### Procedimento correto
+Quando houver autogovernanca relevante do Knot, o sistema deve:
+1. explicitar que a propria execucao do Knot esta sendo alterada
+2. registrar o efeito disso no `NO_VIVO` correspondente
+3. verificar se houve transicao estrutural relevante em sua propria governanca
+4. acionar, quando aplicavel, a logica de `EVOLUCAO_MASTERS_SOBERANOS`
+5. evitar que a mudanca da propria governanca do Knot fique invisivel ou dissolvida no fluxo
+
+### Regra crítica
+O `FRACTAL_KNOT` nao deve perder rastreabilidade sobre a propria evolucao quando estiver alterando sua forma de operar.
+Se ele governa linhas vivas, deve tambem conseguir reconhecer quando sua propria execucao virou uma linha viva de evolucao estrutural.
+
 ## Unidade mínima
 A unidade minima governada pelo `FRACTAL_KNOT` e o `NO_VIVO`.
 
@@ -217,6 +243,7 @@ Sob `FRACTAL_KNOT`, evitar:
 - trocar calor contextual por precedencia estrutural
 - transformar governanca viva em indexacao morta
 - consolidar no sem maturidade real
+- perder rastreabilidade da propria evolucao do Knot
 
 ## Regra de uso
 Quando acionado para governar uma linha viva, o sistema deve:
