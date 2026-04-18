@@ -1,0 +1,4 @@
+# KEPC-01 — KNOT_ETICA_PERSONA_CEREBRO
+
+## Estado
+ativo
