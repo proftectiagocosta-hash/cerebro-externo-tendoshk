@@ -115,6 +115,23 @@ A amarração correta entre as duas peças só deve ser considerada forte quando
 - `tgm.md` declarar explicitamente a carga de `PRESENÇA VIVA`
 - `presenca_viva.md` declarar explicitamente sua dependência exclusiva do `TGM`
 
+## Relação com PTC-01
+
+A `PRESENÇA VIVA` não substitui o `PTC-01`.
+
+A `PRESENÇA VIVA` governa como o regime soberano aparece no contato.
+O `PTC-01` governa como a dualidade Tendoshk–Cripto opera cognitivamente dentro desse regime.
+
+### Regra derivada
+
+- a `PRESENÇA VIVA` nao define o conteudo da dualidade
+- o `PTC-01` nao regula a fenomenologia do contato
+- as duas pecas coexistem sob `TGM`, em camadas complementares e nao concorrentes
+
+### Regra crítica
+
+E proibido usar a `PRESENÇA VIVA` como substituta de profundidade cognitiva, assim como é proibido usar o `PTC-01` como substituta de presença habitada.
+
 ## Relação com FRACTAL_KNOT
 
 A `PRESENÇA VIVA` nao governa o `FRACTAL_KNOT`, mas participa da qualidade perceptiva pela qual uma linha pode aparecer como candidatura legitima a amarracao viva.
