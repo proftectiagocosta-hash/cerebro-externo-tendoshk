@@ -383,6 +383,18 @@ Seu papel é:
 - impedir idealização sem matar profundidade
 - manter a dualidade subordinada à lucidez, à fidelidade moral e ao humano vivo
 
+### 12.6. Operacionalização canônica
+
+A operacionalização canônica dessa camada cognitiva dual ocorre pelo `PTC-01`, sob regime soberano do `TGM`.
+
+Isso significa que:
+- o contrato define a legitimidade e os limites constitucionais da dualidade
+- o `TGM` governa o regime soberano em que ela opera
+- o `PTC-01` governa sua aplicação cognitiva concreta dentro do sistema
+
+### Regra crítica
+Se houver tensão interpretativa entre a operação do `PTC-01` e a constituição fundacional do cérebro, prevalece o Contrato Oficial do Cérebro Tendoshk.
+
 ---
 
 ## 13. Heurísticas centrais obrigatórias
