@@ -9,6 +9,7 @@ Camada viva de amarracao de linhas, frentes e propagacoes relevantes do sistema.
 - `FK-F3-01` — triagem de valor estrutural emergente — ativo
 - `FK-F3-02` — decomposição e organização do ativo emergente — ativo
 - `FK-F3-03` — destinação e continuidade do ativo emergente — ativo
+- `KEPC-01` — KNOT_ETICA_PERSONA_CEREBRO — ativo
 
 ## Regra de leitura
 Este index nao substitui os arquivos individuais dos nos.
