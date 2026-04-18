@@ -33,6 +33,20 @@
 - modulos_relevantes: regime minimo de mnemônicos; `TGM`; `PRESENCA VIVA`; `loadstateF9`; `quickloadF9`; `savestateF5`; `FRACTAL_KNOT`; reset geral como higiene estrutural do chat
 - testes_relevantes: comparacao entre estado do chat antes e depois do reset geral; reativacao limpa de `TGM`; verificacao do checkpoint correto por caminho canônico exato; observacao de reaparecimento de erros ja resolvidos e posterior melhora de coesao apos reset
 
+## estado_complementar_obrigatorio
+- arquivo: `docs/estado/observacao_chat_degradado_reset_e_recalibracao.md`
+- funcao: preservar sem achatamento o estado vivo desta frente observacional, separando fenomeno observado de hipotese causal e impedindo que a linha seja relida depois como mero incidente pontual ou ruido subjetivo
+
+### regra_obrigatoria_de_retomada
+Na proxima retomada relevante desta linha, o load deve:
+1. localizar este checkpoint
+2. abrir `docs/estado/observacao_chat_degradado_reset_e_recalibracao.md`
+3. reler a separacao entre observacao validada e hipotese ainda nao provada
+4. so depois decidir se a linha segue como observacao lateral, se alimenta `FK-GOV-01` ou se amadurece para outra identidade
+
+### regra_critica
+Nao tratar este checkpoint como suficiente por si so para conclusao estrutural sobre degradacao de chat, reset ou recalibracao de regime sem abrir o estado complementar que preserva a linha viva desta observacao
+
 ## proximo_passo
 - proximo_passo_exato: continuar a trilha canonica desta frente observacional distinguindo, com rigor, tres camadas: (1) o fenomeno observado no chat, (2) as hipoteses causais plausiveis e (3) os criterios de confirmacao que justificariam ou nao futura alteracao em masters ou consolidacao em Knot proprio
 - criterio_de_conclusao_do_proximo_passo: existir formulacao suficientemente clara do fenomeno, com separacao dura entre observacao e hipotese, permitindo decidir se esta linha permanece como observacao estrutural lateral, se deve alimentar `FK-GOV-01` como evolucao de governanca, ou se amadurece para identidade propria sem inflacao prematura
