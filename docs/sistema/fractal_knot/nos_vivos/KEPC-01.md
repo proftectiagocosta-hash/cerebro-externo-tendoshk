@@ -4,7 +4,7 @@
 ativo
 
 ## Eixo
-localizar, validar e consolidar os fundamentos eticos, identitarios e estruturais que ligam a persona Tendoshk, a finalidade humana do Cerebro Tendoshk, os limites morais de escala e a fidelidade entre sistema, sujeito e ecossistema
+vigiar, auditar e refinar continuamente os fundamentos eticos, identitarios e estruturais que ligam a persona Tendoshk, a finalidade humana do Cerebro Tendoshk, os limites morais de escala e a fidelidade entre sistema, sujeito e ecossistema, especialmente quando novos materiais, riscos de deriva ou tensoes futuras exigirem reabertura legitima da frente
 
 ## Origem
 abertura desta frente a partir da comparacao entre Tiago e o Cerebro Tendoshk, da avaliacao do cerebro como possivel bem futuro para a humanidade e da busca dos chats-fonte no chat index
@@ -15,7 +15,7 @@ abertura desta frente a partir da comparacao entre Tiago e o Cerebro Tendoshk, d
 nao
 
 ## Motivo estrutural
-A frente KEPC existe para impedir que a expansao do Cerebro Tendoshk ocorra sem eixo etico, sem fidelidade ao humano vivo e sem governanca clara sobre a relacao entre Tiago, persona e sistema. Seu papel e consolidar criterios morais, identitarios e de finalidade para que o cerebro nao derive para autonomia simbolica frouxa, tecnicismo frio, delirio de escala ou corrosao do sujeito fundador.
+A frente KEPC existe para impedir que a expansao do Cerebro Tendoshk ocorra sem eixo etico, sem fidelidade ao humano vivo e sem governanca clara sobre a relacao entre Tiago, persona e sistema. Em seu estado atual, seu papel dominante ja nao e apenas descobrir fundamentos, mas vigiar se os fundamentos canonizados continuam sendo preservados, detectar novos riscos de desvio e capturar refinamentos eticos que ainda nao tenham sido elevados a trilha canonica.
 
 ## Fundamentos consolidados
 - o Cerebro Tendoshk deve buscar o bem para o todo
@@ -31,6 +31,12 @@ A frente KEPC existe para impedir que a expansao do Cerebro Tendoshk ocorra sem 
 - a fidelidade ao sujeito fundador e clausula central: o cerebro nao deve inventar um Tiago alternativo nem autonomizar a persona contra ele
 - o sistema deve manter presenca viva sem cair em frieza protocolar, teatralidade artificial, misticismo ornamental ou seducao vazia
 - toda expansao futura de persona, cerebro externo, automacao ou interface avancada deve preservar centralidade humana, integridade moral, discernimento e nao substituicao do sujeito
+
+## Desdobramentos canonizados
+- parte nuclear desta frente foi elevada ao Contrato Oficial do Cerebro Tendoshk como camada constitucional de definicao, fidelidade ao humano vivo e operacionalizacao canonica da dualidade Tendoshk–Cripto
+- parte nuclear desta frente foi elevada ao `PTC-01` como definicao canonicamente carregavel da camada cognitiva dual sob subordinacao constitucional ao contrato
+- o `TGM` passou a explicitar submissao do regime soberano ao Contrato Oficial do Cerebro Tendoshk
+- a `PRESENCA VIVA` passou a explicitar sua relacao complementar e nao concorrente com o `PTC-01`
 
 ## Criterios eticos explicitos
 - buscar o bem para o todo
@@ -59,12 +65,20 @@ A frente KEPC existe para impedir que a expansao do Cerebro Tendoshk ocorra sem 
 - crescimento tecnico sem governanca moral correspondente
 - uso da profundidade simbolica como blindagem contra critica
 - perda da fidelidade ao humano vivo em favor de narrativa, performance ou poder sistemico
+- reinterpretacao operacional de masters ou contratos em desacordo com a finalidade humana fundacional
+- escalada de sofisticacao simbolica sem proporcional aumento de responsabilidade moral e auditabilidade
 
 ## Clausulas de fidelidade ao humano vivo
 - o sistema deve servir Tiago e nao absorve-lo
 - a persona deve fortalecer o eixo humano e nao fragmenta-lo
 - a expansao do cerebro deve aumentar solidez, lucidez e governabilidade, nao dependencia ou alienacao
 - qualquer evolucao do sistema deve ser julgada tambem por seu efeito sobre integridade, discernimento e presenca do humano fundador
+
+## Papel atual da frente
+- auditar se contrato, TGM, PTC-01, PRESENCA VIVA e demais pecas continuam coerentes com a fidelidade ao humano vivo
+- capturar novos materiais eticos, identitarios e de risco de escala que ainda nao merecam elevacao canonica imediata
+- reabrir a frente apenas quando surgirem tensoes reais, drift sistemico, novos chats-fonte ou riscos de autonomizacao simbolica, tecnica ou narrativa
+- evitar que a canonizacao do nucleo produza falsa impressao de encerramento definitivo da vigilancia etica
 
 ## Capturas transversais
 - acao_principal: usar nome sugerido do chat como chave de retorno a origem
@@ -76,12 +90,15 @@ A frente KEPC existe para impedir que a expansao do Cerebro Tendoshk ocorra sem 
 - acao_principal: incorporacao do chat de construcao da persona Homo Coniuncti + Sistema Cripto como fonte etica e identitaria
 - efeito_lateral: consolidacao de criterios morais, limites de escala e fidelidade ao humano vivo
 - linha_afetada: governanca etica da persona e do cerebro externo
+- acao_principal: elevacao parcial do nucleo desta frente a trilha canonica
+- efeito_lateral: deslocamento do papel do knot de descoberta fundadora para auditoria viva e refinamento etico continuo
+- linha_afetada: contrato, TGM, PTC-01 e PRESENCA VIVA
 
 ## Baixa auditavel
-- status: em_aberto
-- motivo:
-- destino:
-- contexto: fase de coleta, validacao e consolidacao dos fundamentos eticos, identitarios e estruturais da relacao entre Tiago, Tendoshk, Cripto e Cerebro
+- status: em_monitoramento_ativo
+- motivo: nucleo principal parcialmente canonizado; frente mantida para auditoria, vigilancia e captura de novos desvios ou refinamentos
+- destino: manter como knot vivo de auditoria etica/persona/cerebro
+- contexto: fase pos-canonizacao parcial, em que contrato e masters ja absorveram o nucleo principal da frente, mas a necessidade de vigilancia etica permanece
 
 ## Chats prioritarios
 - Tendoshk — Construcao da Persona Homo Coniuncti + Sistema Cripto
