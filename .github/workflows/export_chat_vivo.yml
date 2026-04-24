@@ -1,0 +1,48 @@
+name: export_chat_vivo
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "init append close"
+        required: true
+        default: "init"
+      title:
+        required: false
+        default: "Chat Atual"
+      chat_id:
+        required: false
+        default: ""
+      input_file:
+        required: false
+        default: "docs/sistema/export_chat_vivo/inbox/chat_atual.txt"
+      coverage:
+        required: true
+        default: "integral_declarada_pelo_usuario"
+      origin:
+        required: true
+        default: "ctrl_a_usuario"
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: run export
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          if [ "$MODE" = "init" ]; then
+            python tools/export_chat_vivo.py init --title "${{ github.event.inputs.title }}" --input "${{ github.event.inputs.input_file }}"
+          elif [ "$MODE" = "append" ]; then
+            python tools/export_chat_vivo.py append --chat-id "${{ github.event.inputs.chat_id }}" --input "${{ github.event.inputs.input_file }}"
+          elif [ "$MODE" = "close" ]; then
+            python tools/export_chat_vivo.py close --chat-id "${{ github.event.inputs.chat_id }}"
+          fi
+      - name: commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "export chat vivo" || echo "no changes"
+          git push
