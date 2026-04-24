@@ -73,6 +73,12 @@ docs/sistema/export_chat_vivo/
 ├── protocolo_export_chat_vivo.md
 ├── index.md
 ├── index.json
+├── inbox/
+│   └── chat_atual.txt
+├── raw/
+│   └── AAAA/
+│       └── MM/
+│           └── chat_id__bloco_001.txt
 └── chats/
     └── AAAA/
         └── MM/
@@ -134,12 +140,15 @@ metadados_bloco:
 - cobertura_bloco: integral_declarada | parcial | desconhecida
 - recebido_em: AAAA-MM-DD HH:MM
 - hash_conteudo: 
+- raw_file: 
 - bloco_anterior: nenhum
 - sobreposicao_tratada: sim | nao | nao_aplicavel
 
 <!-- EXPORT_CHAT_VIVO_START:BLOCO_001 -->
 
-<conteúdo bruto ou minimamente formatado>
+conteudo: arquivo_externo
+arquivo_raw: `docs/sistema/export_chat_vivo/raw/AAAA/MM/chat_id__bloco_001.txt`
+hash_sha256: ``
 
 <!-- EXPORT_CHAT_VIVO_END:BLOCO_001 -->
 ```
@@ -307,7 +316,81 @@ reconciliação posterior
 
 Quando o export global estiver disponível, o chat vivo pode ser reconciliado com ele.
 
-## 18. Regras de fechamento do chat vivo
+## 18. Modo GitHub-first com GitHub Actions
+
+Quando o usuário não possuir o repositório clonado localmente, o `EXPORT_CHAT_VIVO` pode operar em modo GitHub-first.
+
+Nesse modo, o fluxo correto é:
+
+```txt
+1. usuário cria ou atualiza um arquivo .txt no GitHub;
+2. arquivo preferencial: docs/sistema/export_chat_vivo/inbox/chat_atual.txt;
+3. usuário executa manualmente a GitHub Action EXPORT_CHAT_VIVO;
+4. a Action roda tools/export_chat_vivo.py;
+5. o script cria RAW, chat .md e atualiza index.md/index.json;
+6. a Action commita e envia as alterações para a branch principal.
+```
+
+### 18.1 Arquivo de entrada no GitHub
+
+O arquivo de entrada padrão no modo GitHub-first é:
+
+```txt
+docs/sistema/export_chat_vivo/inbox/chat_atual.txt
+```
+
+Esse arquivo é área de entrada, não memória final.
+
+A fonte preservada passa a ser o RAW gerado em:
+
+```txt
+docs/sistema/export_chat_vivo/raw/AAAA/MM/
+```
+
+### 18.2 Workflow canônico
+
+O workflow canônico deve viver em:
+
+```txt
+.github/workflows/export_chat_vivo.yml
+```
+
+Ele deve aceitar, no mínimo:
+
+```txt
+mode: init | append | close
+title
+chat_id
+input_file
+coverage
+origin
+observations
+```
+
+### 18.3 Regra de commit automático
+
+A Action só deve commitar se houver alterações reais.
+
+Se não houver alterações, deve declarar explicitamente:
+
+```txt
+[CONFIRMADO] Nenhuma alteração detectada para commit.
+```
+
+### 18.4 Limite do modo GitHub-first
+
+O modo GitHub-first não elimina a necessidade de o usuário inserir o conteúdo inicial em um arquivo `.txt` no repositório.
+
+Ele elimina a necessidade de clone local e execução local de Python.
+
+Formulação:
+
+```txt
+GitHub Actions não copia o chat do navegador.
+GitHub Actions processa o arquivo que o usuário colocou no repositório.
+```
+
+## 19. Regras de fechamento do chat vivo
 
 Quando o usuário declarar fechamento, o sistema deve:
 
@@ -318,7 +401,7 @@ Quando o usuário declarar fechamento, o sistema deve:
 5. indicar se o chat ainda precisa de curadoria;
 6. indicar se deve gerar `[CHAT_INDEX]`, `[NPT_ENTRY]`, checkpoint ou Knot em etapa posterior.
 
-## 19. Regras de erro
+## 20. Regras de erro
 
 Se o sistema não conseguir acessar o arquivo existente:
 
@@ -341,7 +424,7 @@ status_operacao: append_com_alerta
 observacao: possivel_duplicacao_a_revisar
 ```
 
-## 20. Critério de sucesso
+## 21. Critério de sucesso
 
 A operação de export vivo é bem-sucedida quando:
 
@@ -351,7 +434,7 @@ A operação de export vivo é bem-sucedida quando:
 - o índice foi atualizado;
 - o estado final da operação foi informado honestamente.
 
-## 21. Critério de falha
+## 22. Critério de falha
 
 A operação falha quando:
 
@@ -362,34 +445,34 @@ A operação falha quando:
 - o índice não é atualizado;
 - o bloco novo é misturado ao anterior sem delimitação.
 
-## 22. Fluxo mínimo de uso
+## 23. Fluxo mínimo de uso
 
-### 22.1 Criar novo chat vivo
+### 23.1 Criar novo chat vivo
 
 1. Usuário solicita exportação do chat atual.
-2. Usuário cola conteúdo inicial ou autoriza uso da janela visível.
+2. Usuário cola conteúdo inicial ou envia arquivo de entrada.
 3. Sistema cria arquivo `.md`.
 4. Sistema cria BLOCO 001.
 5. Sistema atualiza índice.
 6. Sistema declara resultado.
 
-### 22.2 Atualizar chat vivo
+### 23.2 Atualizar chat vivo
 
-1. Usuário cola novo trecho.
+1. Usuário cola novo trecho ou atualiza arquivo de entrada.
 2. Sistema identifica arquivo existente.
 3. Sistema cria BLOCO seguinte.
 4. Sistema verifica sobreposição.
 5. Sistema atualiza índice.
 6. Sistema declara resultado.
 
-### 22.3 Fechar chat vivo
+### 23.3 Fechar chat vivo
 
 1. Usuário solicita fechamento.
 2. Sistema marca `status: fechado`.
 3. Sistema atualiza índice.
 4. Sistema recomenda próxima etapa.
 
-## 23. Próxima etapa após este protocolo
+## 24. Próxima etapa após este protocolo
 
 Antes de promover este protocolo a master soberano, deve haver teste real com pelo menos um chat atual.
 
@@ -397,7 +480,7 @@ Teste mínimo:
 
 ```txt
 1. criar arquivo vivo do chat atual;
-2. adicionar BLOCO 001 por conteúdo colado;
+2. adicionar BLOCO 001 por conteúdo colado ou arquivo de entrada;
 3. adicionar BLOCO 002 com conteúdo posterior;
 4. verificar duplicação;
 5. atualizar índice;
@@ -405,7 +488,7 @@ Teste mínimo:
 7. fechar ou manter em andamento.
 ```
 
-## 24. Regra final
+## 25. Regra final
 
 O `EXPORT_CHAT_VIVO` existe para transformar conversa em fonte preservada antes que ela se perca na limitação da janela de contexto.
 
