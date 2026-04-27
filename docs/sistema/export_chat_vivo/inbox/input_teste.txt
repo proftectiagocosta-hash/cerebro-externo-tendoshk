@@ -1,1 +1,4 @@
-Teste inicial do EXPORT_CHAT_VIVO.
+TESTE APPEND EXPORT CHAT VIVO
+
+Este é o segundo bloco.
+Se isso funcionar, o sistema consegue anexar conteúdo novo ao chat vivo existente.
