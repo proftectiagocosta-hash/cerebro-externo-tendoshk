@@ -7,11 +7,11 @@
       "titulo": "Teste Export Chat Vivo",
       "slug": "teste_export_chat_vivo",
       "arquivo": "docs/sistema/export_chat_vivo/chats/2026/04/2026_04_24_teste_export_chat_vivo.md",
-      "status": "em_andamento",
+      "status": "fechado",
       "cobertura": "integral_declarada_pelo_usuario",
       "ultimo_bloco": 2,
       "criado_em": "2026-04-24 18:04:52",
-      "atualizado_em": "2026-04-27 00:55:21",
+      "atualizado_em": "2026-04-27 00:58:32",
       "origem": "ctrl_a_usuario",
       "observacoes": ""
     }

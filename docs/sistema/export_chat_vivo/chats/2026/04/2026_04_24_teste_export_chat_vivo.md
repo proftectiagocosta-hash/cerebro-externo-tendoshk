@@ -4,11 +4,11 @@ versao_protocolo: v0.1
 chat_id: 2026_04_24_teste_export_chat_vivo
 titulo: Teste Export Chat Vivo
 slug: teste_export_chat_vivo
-status: em_andamento
+status: fechado
 origem: ctrl_a_usuario
 cobertura: integral_declarada_pelo_usuario
 criado_em: 2026-04-24 18:04:52
-atualizado_em: 2026-04-27 00:55:21
+atualizado_em: 2026-04-27 00:58:32
 ultimo_bloco: 002
 arquivo_origem: chatgpt_web
 observacoes: 
