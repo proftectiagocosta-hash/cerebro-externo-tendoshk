@@ -1,9 +1,9 @@
 {
   "protocolo": "EXPORT_CHAT_VIVO",
   "versao": "v0.1",
-  "chat_id": "",
-  "arquivo": "",
-  "status": "nenhum",
-  "atualizado_em": "",
-  "observacoes": "Ponteiro do chat vivo ativo."
+  "chat_id": "2026_04_27_teste_ponteiro_current_chat",
+  "arquivo": "docs/sistema/export_chat_vivo/chats/2026/04/2026_04_27_teste_ponteiro_current_chat.md",
+  "status": "em_andamento",
+  "atualizado_em": "2026-04-27 01:18:38",
+  "observacoes": "Chat ativo definido pelo último init."
 }
