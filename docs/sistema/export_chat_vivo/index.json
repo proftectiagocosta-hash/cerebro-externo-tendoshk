@@ -22,9 +22,9 @@
       "arquivo": "docs/sistema/export_chat_vivo/chats/2026/04/2026_04_27_teste_ponteiro_current_chat.md",
       "status": "em_andamento",
       "cobertura": "integral_declarada_pelo_usuario",
-      "ultimo_bloco": 1,
+      "ultimo_bloco": 2,
       "criado_em": "2026-04-27 01:18:38",
-      "atualizado_em": "2026-04-27 01:18:38",
+      "atualizado_em": "2026-04-27 01:19:54",
       "origem": "ctrl_a_usuario",
       "observacoes": ""
     }
