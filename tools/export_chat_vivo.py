@@ -3,7 +3,8 @@
 EXPORT_CHAT_VIVO v0.1
 
 Executor local/GitHub Actions para preservar chats atuais em Markdown versionado,
-com camada RAW, blocos sequenciais, índice e ponteiro current_chat.json.
+com camada RAW, blocos sequenciais, índice, ponteiro current_chat.json e
+EV-03.1 deduplicação conservadora por hash exato.
 
 O script NÃO faz curadoria, NÃO resume e NÃO interpreta o conteúdo.
 Ele apenas preserva fonte, registra bloco e atualiza índice.
@@ -211,11 +212,11 @@ def year_month_paths(base_dir: Path, subdir: str) -> Path:
     return base_dir / subdir / year / month
 
 
-def write_raw_block(base_dir: Path, chat_id: str, block_number: int, content: str) -> tuple[Path, str]:
+def write_raw_block(base_dir: Path, chat_id: str, block_number: int, content: str, content_hash: str | None = None) -> tuple[Path, str]:
     raw_dir = year_month_paths(base_dir, "raw")
     raw_dir.mkdir(parents=True, exist_ok=True)
     raw_path = raw_dir / f"{chat_id}__bloco_{block_number:03}.txt"
-    content_hash = sha256_text(content)
+    content_hash = content_hash or sha256_text(content)
     raw_path.write_text(content, encoding="utf-8")
     return raw_path, content_hash
 
@@ -229,6 +230,23 @@ def chat_file_path(base_dir: Path, chat_id: str) -> Path:
 
 def relative_to_repo(path: Path) -> str:
     return path.as_posix()
+
+
+def extract_registered_hashes(chat_markdown: str) -> set[str]:
+    """Return all SHA-256 hashes already registered in a chat .md.
+
+    EV-03.1 is intentionally conservative: only exact hash matches are treated
+    as duplicates. No fuzzy/partial deduplication is performed here.
+    """
+    hashes: set[str] = set()
+    patterns = [
+        r"hash_sha256:\s*`?([0-9a-f]{64})`?",
+        r"hash_conteudo:\s*([0-9a-f]{64})",
+    ]
+    for pattern in patterns:
+        for match in re.finditer(pattern, chat_markdown, flags=re.IGNORECASE):
+            hashes.add(match.group(1).lower())
+    return hashes
 
 
 def create_chat_header(*, chat_id: str, title: str, slug: str, status: str, coverage: str, created_at: str, updated_at: str, last_block: int, origin: str, observations: str) -> str:
@@ -312,7 +330,8 @@ def init_chat(args: argparse.Namespace) -> AppendResult:
     index_data = load_index(index_json_path)
     if find_entry(index_data, chat_id) and not args.force:
         raise ValueError(f"chat_id já existe no índice: {chat_id}")
-    raw_path, content_hash = write_raw_block(base_dir, chat_id, 1, content)
+    content_hash = sha256_text(content)
+    raw_path, content_hash = write_raw_block(base_dir, chat_id, 1, content, content_hash)
     header = create_chat_header(chat_id=chat_id, title=title, slug=slug, status="em_andamento", coverage=coverage, created_at=created_at, updated_at=created_at, last_block=1, origin=origin, observations=args.observations or "")
     block = create_block_markdown(block_number=1, origin=origin, coverage=coverage, received_at=created_at, content_hash=content_hash, raw_path=raw_path, previous_block=None, overlap_status="nao_aplicavel")
     chat_path.write_text(header + block, encoding="utf-8")
@@ -344,10 +363,19 @@ def append_chat(args: argparse.Namespace) -> AppendResult:
     if not chat_path.exists():
         raise FileNotFoundError(f"Arquivo de chat registrado no índice não existe: {chat_path}")
     last_block = int(entry.get("ultimo_bloco", 0))
-    next_block = last_block + 1
     updated_at = now_str()
-    raw_path, content_hash = write_raw_block(base_dir, chat_id, next_block, content)
+    content_hash = sha256_text(content)
     existing_content = chat_path.read_text(encoding="utf-8", errors="replace")
+    registered_hashes = extract_registered_hashes(existing_content)
+    if content_hash.lower() in registered_hashes:
+        print("[CONFIRMADO] duplicado_detectado")
+        print("acao=nao_criar_novo_bloco")
+        print(f"chat_id={chat_id}")
+        print(f"hash_sha256={content_hash}")
+        print(f"ultimo_bloco={last_block:03}")
+        return AppendResult(chat_id, chat_path, None, index_md_path, index_json_path, last_block, content_hash, entry.get("status", "em_andamento"), coverage, "duplicado_detectado")
+    next_block = last_block + 1
+    raw_path, content_hash = write_raw_block(base_dir, chat_id, next_block, content, content_hash)
     block = create_block_markdown(block_number=next_block, origin=args.origin, coverage=coverage, received_at=updated_at, content_hash=content_hash, raw_path=raw_path, previous_block=last_block, overlap_status="nao")
     updated_content = update_header_metadata(existing_content, status=entry.get("status", "em_andamento"), coverage=coverage, updated_at=updated_at, last_block=next_block)
     chat_path.write_text(updated_content.rstrip() + "\n\n" + block, encoding="utf-8")
