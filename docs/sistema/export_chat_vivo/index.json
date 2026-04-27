@@ -27,6 +27,19 @@
       "atualizado_em": "2026-04-27 01:19:54",
       "origem": "ctrl_a_usuario",
       "observacoes": ""
+    },
+    {
+      "chat_id": "2026_04_27_chat_atual",
+      "titulo": "Chat Atual",
+      "slug": "chat_atual",
+      "arquivo": "docs/sistema/export_chat_vivo/chats/2026/04/2026_04_27_chat_atual.md",
+      "status": "em_andamento",
+      "cobertura": "integral_declarada_pelo_usuario",
+      "ultimo_bloco": 1,
+      "criado_em": "2026-04-27 02:10:58",
+      "atualizado_em": "2026-04-27 02:10:58",
+      "origem": "ctrl_a_usuario",
+      "observacoes": ""
     }
   ]
 }
