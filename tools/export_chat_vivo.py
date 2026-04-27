@@ -2,19 +2,8 @@
 """
 EXPORT_CHAT_VIVO v0.1
 
-Executor local para preservar chats atuais em Markdown versionado, com camada RAW,
-blocos sequenciais e atualização de índices.
-
-Uso previsto dentro da raiz do repositório cerebro-externo-tendoshk:
-
-1) Criar um chat vivo novo:
-   python tools/export_chat_vivo.py init --title "Memória Persistente e Curadoria" --input inbox/chat_atual.txt
-
-2) Anexar novo bloco a um chat existente:
-   python tools/export_chat_vivo.py append --chat-id 2026_04_24_memoria_persistente_e_curadoria --input inbox/chat_atual.txt
-
-3) Fechar um chat vivo:
-   python tools/export_chat_vivo.py close --chat-id 2026_04_24_memoria_persistente_e_curadoria
+Executor local/GitHub Actions para preservar chats atuais em Markdown versionado,
+com camada RAW, blocos sequenciais, índice e ponteiro current_chat.json.
 
 O script NÃO faz curadoria, NÃO resume e NÃO interpreta o conteúdo.
 Ele apenas preserva fonte, registra bloco e atualiza índice.
@@ -36,7 +25,6 @@ from typing import Any
 PROTOCOL_NAME = "EXPORT_CHAT_VIVO"
 PROTOCOL_VERSION = "v0.1"
 DEFAULT_BASE_DIR = Path("docs/sistema/export_chat_vivo")
-VALID_STATUS = {"em_andamento", "pausado", "fechado", "reconciliado", "curado", "arquivado"}
 VALID_COVERAGE = {"parcial", "integral_declarada_pelo_usuario", "desconhecida"}
 
 
@@ -59,11 +47,11 @@ class ChatIndexEntry:
 class AppendResult:
     chat_id: str
     chat_file: Path
-    raw_file: Path
+    raw_file: Path | None
     index_md: Path
     index_json: Path
     block_number: int
-    content_hash: str
+    content_hash: str | None
     status: str
     coverage: str
     operation: str
@@ -80,7 +68,6 @@ def today_parts() -> tuple[str, str, str]:
 
 def slugify(text: str, max_len: int = 80) -> str:
     text = text.lower().strip()
-    # Remove accents conservatively without external dependencies.
     replacements = {
         "á": "a", "à": "a", "ã": "a", "â": "a", "ä": "a",
         "é": "e", "è": "e", "ê": "e", "ë": "e",
@@ -113,6 +100,8 @@ def ensure_base_structure(base_dir: Path) -> None:
         write_initial_index_md(base_dir / "index.md")
     if not (base_dir / "index.json").exists():
         write_initial_index_json(base_dir / "index.json")
+    if not (base_dir / "current_chat.json").exists():
+        write_current_chat(base_dir, chat_id="", arquivo="", status="nenhum", observacoes="Ponteiro do chat vivo ativo.")
 
 
 def write_initial_index_md(path: Path) -> None:
@@ -129,6 +118,48 @@ def write_initial_index_json(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {"protocolo": PROTOCOL_NAME, "versao": PROTOCOL_VERSION, "chats": []}
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def current_chat_path(base_dir: Path) -> Path:
+    return base_dir / "current_chat.json"
+
+
+def read_current_chat(base_dir: Path) -> dict[str, Any]:
+    path = current_chat_path(base_dir)
+    if not path.exists():
+        write_current_chat(base_dir, chat_id="", arquivo="", status="nenhum", observacoes="Ponteiro do chat vivo ativo.")
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"current_chat.json inválido: {exc}") from exc
+
+
+def write_current_chat(base_dir: Path, *, chat_id: str, arquivo: str, status: str, observacoes: str = "") -> None:
+    path = current_chat_path(base_dir)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "protocolo": PROTOCOL_NAME,
+        "versao": PROTOCOL_VERSION,
+        "chat_id": chat_id,
+        "arquivo": arquivo,
+        "status": status,
+        "atualizado_em": now_str(),
+        "observacoes": observacoes or "Ponteiro do chat vivo ativo.",
+    }
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def resolve_chat_id(base_dir: Path, explicit_chat_id: str | None) -> str:
+    if explicit_chat_id and explicit_chat_id.strip():
+        return explicit_chat_id.strip()
+    current = read_current_chat(base_dir)
+    chat_id = str(current.get("chat_id", "")).strip()
+    status = str(current.get("status", "")).strip()
+    if not chat_id:
+        raise ValueError("chat_id não informado e current_chat.json não possui chat ativo.")
+    if status not in {"em_andamento", "pausado"}:
+        raise ValueError(f"current_chat.json aponta para chat com status não anexável: {status}")
+    return chat_id
 
 
 def load_index(index_json_path: Path) -> dict[str, Any]:
@@ -200,19 +231,7 @@ def relative_to_repo(path: Path) -> str:
     return path.as_posix()
 
 
-def create_chat_header(
-    *,
-    chat_id: str,
-    title: str,
-    slug: str,
-    status: str,
-    coverage: str,
-    created_at: str,
-    updated_at: str,
-    last_block: int,
-    origin: str,
-    observations: str,
-) -> str:
+def create_chat_header(*, chat_id: str, title: str, slug: str, status: str, coverage: str, created_at: str, updated_at: str, last_block: int, origin: str, observations: str) -> str:
     return (
         "---\n"
         f"protocolo: {PROTOCOL_NAME}\n"
@@ -232,17 +251,7 @@ def create_chat_header(
     )
 
 
-def create_block_markdown(
-    *,
-    block_number: int,
-    origin: str,
-    coverage: str,
-    received_at: str,
-    content_hash: str,
-    raw_path: Path,
-    previous_block: int | None,
-    overlap_status: str,
-) -> str:
+def create_block_markdown(*, block_number: int, origin: str, coverage: str, received_at: str, content_hash: str, raw_path: Path, previous_block: int | None, overlap_status: str) -> str:
     previous = "nenhum" if previous_block is None else f"BLOCO_{previous_block:03}"
     return (
         f"## BLOCO {block_number:03}\n\n"
@@ -255,7 +264,7 @@ def create_block_markdown(
         f"- bloco_anterior: {previous}\n"
         f"- sobreposicao_tratada: {overlap_status}\n\n"
         f"<!-- EXPORT_CHAT_VIVO_START:BLOCO_{block_number:03} -->\n\n"
-        f"conteudo: arquivo_externo\n"
+        "conteudo: arquivo_externo\n"
         f"arquivo_raw: `{relative_to_repo(raw_path)}`\n"
         f"hash_sha256: `{content_hash}`\n\n"
         f"<!-- EXPORT_CHAT_VIVO_END:BLOCO_{block_number:03} -->\n\n"
@@ -263,7 +272,6 @@ def create_block_markdown(
 
 
 def update_header_metadata(content: str, *, status: str, coverage: str, updated_at: str, last_block: int) -> str:
-    # Updates only known YAML-like fields in the first header.
     replacements = {
         r"^status: .*$": f"status: {status}",
         r"^cobertura: .*$": f"cobertura: {coverage}",
@@ -283,231 +291,122 @@ def update_header_metadata(content: str, *, status: str, coverage: str, updated_
 def init_chat(args: argparse.Namespace) -> AppendResult:
     base_dir = Path(args.base_dir)
     ensure_base_structure(base_dir)
-
     title = args.title.strip()
     if not title:
         raise ValueError("--title não pode ser vazio.")
-
-    input_path = Path(args.input)
-    content = read_text_file(input_path)
+    content = read_text_file(Path(args.input))
     if not content.strip():
         raise ValueError("Arquivo de entrada está vazio.")
-
     coverage = args.coverage
     if coverage not in VALID_COVERAGE:
         raise ValueError(f"Cobertura inválida: {coverage}")
-
     origin = args.origin
     created_at = now_str()
-    updated_at = created_at
     chat_id = args.chat_id.strip() if args.chat_id else build_chat_id(title)
     slug = slugify(title)
     chat_path = chat_file_path(base_dir, chat_id)
-
     if chat_path.exists() and not args.force:
         raise FileExistsError(f"Chat já existe: {chat_path}. Use append ou --force conscientemente.")
-
     index_json_path = base_dir / "index.json"
     index_md_path = base_dir / "index.md"
     index_data = load_index(index_json_path)
     if find_entry(index_data, chat_id) and not args.force:
         raise ValueError(f"chat_id já existe no índice: {chat_id}")
-
     raw_path, content_hash = write_raw_block(base_dir, chat_id, 1, content)
-    header = create_chat_header(
-        chat_id=chat_id,
-        title=title,
-        slug=slug,
-        status="em_andamento",
-        coverage=coverage,
-        created_at=created_at,
-        updated_at=updated_at,
-        last_block=1,
-        origin=origin,
-        observations=args.observations or "",
-    )
-    block = create_block_markdown(
-        block_number=1,
-        origin=origin,
-        coverage=coverage,
-        received_at=updated_at,
-        content_hash=content_hash,
-        raw_path=raw_path,
-        previous_block=None,
-        overlap_status="nao_aplicavel",
-    )
+    header = create_chat_header(chat_id=chat_id, title=title, slug=slug, status="em_andamento", coverage=coverage, created_at=created_at, updated_at=created_at, last_block=1, origin=origin, observations=args.observations or "")
+    block = create_block_markdown(block_number=1, origin=origin, coverage=coverage, received_at=created_at, content_hash=content_hash, raw_path=raw_path, previous_block=None, overlap_status="nao_aplicavel")
     chat_path.write_text(header + block, encoding="utf-8")
-
-    entry = ChatIndexEntry(
-        chat_id=chat_id,
-        titulo=title,
-        slug=slug,
-        arquivo=relative_to_repo(chat_path),
-        status="em_andamento",
-        cobertura=coverage,
-        ultimo_bloco=1,
-        criado_em=created_at,
-        atualizado_em=updated_at,
-        origem=origin,
-        observacoes=args.observations or "",
-    )
+    entry = ChatIndexEntry(chat_id=chat_id, titulo=title, slug=slug, arquivo=relative_to_repo(chat_path), status="em_andamento", cobertura=coverage, ultimo_bloco=1, criado_em=created_at, atualizado_em=created_at, origem=origin, observacoes=args.observations or "")
     index_data["chats"] = [item for item in index_data["chats"] if item.get("chat_id") != chat_id]
     index_data["chats"].append(asdict(entry))
     save_index(index_json_path, index_md_path, index_data)
-
+    write_current_chat(base_dir, chat_id=chat_id, arquivo=relative_to_repo(chat_path), status="em_andamento", observacoes="Chat ativo definido pelo último init.")
     return AppendResult(chat_id, chat_path, raw_path, index_md_path, index_json_path, 1, content_hash, "em_andamento", coverage, "init")
 
 
 def append_chat(args: argparse.Namespace) -> AppendResult:
     base_dir = Path(args.base_dir)
     ensure_base_structure(base_dir)
-
-    chat_id = args.chat_id.strip()
-    if not chat_id:
-        raise ValueError("--chat-id é obrigatório para append.")
-
-    input_path = Path(args.input)
-    content = read_text_file(input_path)
+    chat_id = resolve_chat_id(base_dir, args.chat_id)
+    content = read_text_file(Path(args.input))
     if not content.strip():
         raise ValueError("Arquivo de entrada está vazio.")
-
     coverage = args.coverage
     if coverage not in VALID_COVERAGE:
         raise ValueError(f"Cobertura inválida: {coverage}")
-
     index_json_path = base_dir / "index.json"
     index_md_path = base_dir / "index.md"
     index_data = load_index(index_json_path)
     entry = find_entry(index_data, chat_id)
     if not entry:
         raise ValueError(f"chat_id não encontrado no índice: {chat_id}")
-
     chat_path = Path(entry["arquivo"])
     if not chat_path.exists():
         raise FileNotFoundError(f"Arquivo de chat registrado no índice não existe: {chat_path}")
-
     last_block = int(entry.get("ultimo_bloco", 0))
     next_block = last_block + 1
     updated_at = now_str()
-
     raw_path, content_hash = write_raw_block(base_dir, chat_id, next_block, content)
     existing_content = chat_path.read_text(encoding="utf-8", errors="replace")
-
-    # v0.1: no destructive deduplication. We preserve the full new raw block.
-    overlap_status = "nao"
-    block = create_block_markdown(
-        block_number=next_block,
-        origin=args.origin,
-        coverage=coverage,
-        received_at=updated_at,
-        content_hash=content_hash,
-        raw_path=raw_path,
-        previous_block=last_block,
-        overlap_status=overlap_status,
-    )
-    updated_content = update_header_metadata(
-        existing_content,
-        status=entry.get("status", "em_andamento"),
-        coverage=coverage,
-        updated_at=updated_at,
-        last_block=next_block,
-    )
+    block = create_block_markdown(block_number=next_block, origin=args.origin, coverage=coverage, received_at=updated_at, content_hash=content_hash, raw_path=raw_path, previous_block=last_block, overlap_status="nao")
+    updated_content = update_header_metadata(existing_content, status=entry.get("status", "em_andamento"), coverage=coverage, updated_at=updated_at, last_block=next_block)
     chat_path.write_text(updated_content.rstrip() + "\n\n" + block, encoding="utf-8")
-
     entry["ultimo_bloco"] = next_block
     entry["atualizado_em"] = updated_at
     entry["cobertura"] = coverage
     entry["origem"] = args.origin
     save_index(index_json_path, index_md_path, index_data)
-
+    write_current_chat(base_dir, chat_id=chat_id, arquivo=relative_to_repo(chat_path), status=entry.get("status", "em_andamento"), observacoes="Chat ativo atualizado pelo último append.")
     return AppendResult(chat_id, chat_path, raw_path, index_md_path, index_json_path, next_block, content_hash, entry.get("status", "em_andamento"), coverage, "append")
 
 
 def close_chat(args: argparse.Namespace) -> AppendResult | None:
     base_dir = Path(args.base_dir)
     ensure_base_structure(base_dir)
-
-    chat_id = args.chat_id.strip()
+    chat_id = resolve_chat_id(base_dir, args.chat_id)
     index_json_path = base_dir / "index.json"
     index_md_path = base_dir / "index.md"
     index_data = load_index(index_json_path)
     entry = find_entry(index_data, chat_id)
     if not entry:
         raise ValueError(f"chat_id não encontrado no índice: {chat_id}")
-
     updated_at = now_str()
     entry["status"] = "fechado"
     entry["atualizado_em"] = updated_at
-
     chat_path = Path(entry["arquivo"])
     if not chat_path.exists():
         raise FileNotFoundError(f"Arquivo de chat registrado no índice não existe: {chat_path}")
-
     content = chat_path.read_text(encoding="utf-8", errors="replace")
-    updated_content = update_header_metadata(
-        content,
-        status="fechado",
-        coverage=entry.get("cobertura", "desconhecida"),
-        updated_at=updated_at,
-        last_block=int(entry.get("ultimo_bloco", 0)),
-    )
+    updated_content = update_header_metadata(content, status="fechado", coverage=entry.get("cobertura", "desconhecida"), updated_at=updated_at, last_block=int(entry.get("ultimo_bloco", 0)))
     chat_path.write_text(updated_content, encoding="utf-8")
     save_index(index_json_path, index_md_path, index_data)
-
-    print_result(
-        chat_id=chat_id,
-        operation="close",
-        chat_file=chat_path,
-        raw_file=None,
-        index_md=index_md_path,
-        index_json=index_json_path,
-        block_number=int(entry.get("ultimo_bloco", 0)),
-        content_hash=None,
-        status="fechado",
-        coverage=entry.get("cobertura", "desconhecida"),
-    )
+    write_current_chat(base_dir, chat_id=chat_id, arquivo=relative_to_repo(chat_path), status="fechado", observacoes="Chat fechado pelo comando close.")
+    result = AppendResult(chat_id, chat_path, None, index_md_path, index_json_path, int(entry.get("ultimo_bloco", 0)), None, "fechado", entry.get("cobertura", "desconhecida"), "close")
+    print_result(result)
     return None
 
 
-def print_result(
-    *,
-    chat_id: str,
-    operation: str,
-    chat_file: Path,
-    raw_file: Path | None,
-    index_md: Path,
-    index_json: Path,
-    block_number: int,
-    content_hash: str | None,
-    status: str,
-    coverage: str,
-) -> None:
+def print_result(result: AppendResult) -> None:
     print("[CONFIRMADO] Operação EXPORT_CHAT_VIVO concluída")
-    print(f"operacao={operation}")
-    print(f"chat_id={chat_id}")
-    print(f"status={status}")
-    print(f"cobertura={coverage}")
-    print(f"ultimo_bloco={block_number:03}")
-    print(f"chat_file={chat_file}")
-    if raw_file:
-        print(f"raw_file={raw_file}")
-    if content_hash:
-        print(f"hash_sha256={content_hash}")
-    print(f"index_md={index_md}")
-    print(f"index_json={index_json}")
-    print("\nPróximos comandos sugeridos:")
-    print("git status")
-    print(f"git add {chat_file} {index_md} {index_json}" + (f" {raw_file}" if raw_file else ""))
-    print(f"git commit -m \"feat(export-chat-vivo): {operation} {chat_id}\"")
-    print("git push")
+    print(f"operacao={result.operation}")
+    print(f"chat_id={result.chat_id}")
+    print(f"status={result.status}")
+    print(f"cobertura={result.coverage}")
+    print(f"ultimo_bloco={result.block_number:03}")
+    print(f"chat_file={result.chat_file}")
+    if result.raw_file:
+        print(f"raw_file={result.raw_file}")
+    if result.content_hash:
+        print(f"hash_sha256={result.content_hash}")
+    print(f"index_md={result.index_md}")
+    print(f"index_json={result.index_json}")
+    print(f"current_chat={current_chat_path(DEFAULT_BASE_DIR)}")
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Executor local do EXPORT_CHAT_VIVO")
     parser.add_argument("--base-dir", default=str(DEFAULT_BASE_DIR), help="Diretório base do protocolo")
-
     subparsers = parser.add_subparsers(dest="command", required=True)
-
     init_p = subparsers.add_parser("init", help="Criar novo chat vivo")
     init_p.add_argument("--title", required=True, help="Título humano do chat")
     init_p.add_argument("--input", required=True, help="Arquivo .txt com conteúdo inicial")
@@ -516,52 +415,24 @@ def build_parser() -> argparse.ArgumentParser:
     init_p.add_argument("--origin", default="ctrl_a_usuario")
     init_p.add_argument("--observations", default="")
     init_p.add_argument("--force", action="store_true", help="Permite sobrescrever entrada existente conscientemente")
-
     append_p = subparsers.add_parser("append", help="Anexar bloco a chat vivo existente")
-    append_p.add_argument("--chat-id", required=True)
+    append_p.add_argument("--chat-id", default="", help="Opcional; se omitido, usa current_chat.json")
     append_p.add_argument("--input", required=True)
     append_p.add_argument("--coverage", default="integral_declarada_pelo_usuario", choices=sorted(VALID_COVERAGE))
     append_p.add_argument("--origin", default="ctrl_a_usuario")
-
     close_p = subparsers.add_parser("close", help="Fechar chat vivo")
-    close_p.add_argument("--chat-id", required=True)
-
+    close_p.add_argument("--chat-id", default="", help="Opcional; se omitido, usa current_chat.json")
     return parser
 
 
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
-
     try:
         if args.command == "init":
-            result = init_chat(args)
-            print_result(
-                chat_id=result.chat_id,
-                operation=result.operation,
-                chat_file=result.chat_file,
-                raw_file=result.raw_file,
-                index_md=result.index_md,
-                index_json=result.index_json,
-                block_number=result.block_number,
-                content_hash=result.content_hash,
-                status=result.status,
-                coverage=result.coverage,
-            )
+            print_result(init_chat(args))
         elif args.command == "append":
-            result = append_chat(args)
-            print_result(
-                chat_id=result.chat_id,
-                operation=result.operation,
-                chat_file=result.chat_file,
-                raw_file=result.raw_file,
-                index_md=result.index_md,
-                index_json=result.index_json,
-                block_number=result.block_number,
-                content_hash=result.content_hash,
-                status=result.status,
-                coverage=result.coverage,
-            )
+            print_result(append_chat(args))
         elif args.command == "close":
             close_chat(args)
         else:
@@ -569,7 +440,6 @@ def main() -> int:
     except Exception as exc:
         print(f"[ERRO] {exc}", file=sys.stderr)
         return 1
-
     return 0
 
 
