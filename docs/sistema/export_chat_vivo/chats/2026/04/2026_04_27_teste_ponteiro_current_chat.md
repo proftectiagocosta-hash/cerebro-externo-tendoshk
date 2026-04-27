@@ -4,11 +4,11 @@ versao_protocolo: v0.1
 chat_id: 2026_04_27_teste_ponteiro_current_chat
 titulo: Teste Ponteiro Current Chat
 slug: teste_ponteiro_current_chat
-status: em_andamento
+status: fechado
 origem: ctrl_a_usuario
 cobertura: integral_declarada_pelo_usuario
 criado_em: 2026-04-27 01:18:38
-atualizado_em: 2026-04-27 01:19:54
+atualizado_em: 2026-04-27 02:25:06
 ultimo_bloco: 002
 arquivo_origem: chatgpt_web
 observacoes: 
