@@ -4,11 +4,11 @@ versao_protocolo: v0.1
 chat_id: 2026_04_27_chat_atual
 titulo: Chat Atual
 slug: chat_atual
-status: em_andamento
+status: fechado
 origem: ctrl_a_usuario
 cobertura: integral_declarada_pelo_usuario
 criado_em: 2026-04-27 02:10:58
-atualizado_em: 2026-04-27 02:10:58
+atualizado_em: 2026-04-27 02:26:49
 ultimo_bloco: 001
 arquivo_origem: chatgpt_web
 observacoes: 
